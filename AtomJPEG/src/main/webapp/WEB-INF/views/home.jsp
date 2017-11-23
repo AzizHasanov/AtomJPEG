@@ -10,5 +10,6 @@
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>
+<a href="http://localhost:8080/atomjpeg/main">Go to main </a><br/>
 </body>
 </html>
