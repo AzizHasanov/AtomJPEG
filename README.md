@@ -9,11 +9,11 @@ Highlights
 - Produces optimized thumbnails and previews quickly
 - Uses patented technologies
 
- Benefits 
-  > Cost savings
+Benefits 
+ Cost savings
 - Reduces storage cost
 - Reduces image delivery (bandwidth) cost
-  > Great customer satisfaction
+ Great customer satisfaction
 - Fast upload, download and share images
 - Reduce data usage for mobile users
 
