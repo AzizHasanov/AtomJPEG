@@ -1,4 +1,4 @@
-package com.quramsoft.atomjpeg;
+package com.quramsoft.atomjpeg.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.myProjects.atomjpeg.model.SearchInput;
+import com.quramsoft.atomjpeg.model.SearchInput;
 
 /**
  * Handles requests for the application home page.

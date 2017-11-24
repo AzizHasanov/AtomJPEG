@@ -1,4 +1,4 @@
-package com.myProjects.atomjpeg.model;
+package com.quramsoft.atomjpeg.model;
 
 public class SearchInput {
 
