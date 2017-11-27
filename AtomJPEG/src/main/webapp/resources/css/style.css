@@ -1,0 +1,36 @@
+@charset "EUC-KR";
+
+ 
+
+.result {
+    display: none;
+}
+
+
+body{
+	background-colour:grey
+}
+
+button{
+  width: 82%;
+  padding:5px;
+}
+
+.main_header{
+  text-align: center;
+  margin: 100px 10px;
+}
+.user_input{
+  width: 100%;
+}
+.row{
+  margin:10px;
+  padding:10px;
+}
+span.check_box{
+  padding: 15px;
+  font-size: 20px;
+}
+.atom_option{
+  margin-top: 22px;
+}
