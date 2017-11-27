@@ -1,12 +1,16 @@
 package com.quramsoft.atomjpeg.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,20 +132,99 @@ public class HomeController {
 
 		int less_bandwidth = 0;
 		int average_size_reduction = 0;
-		
+
 		ArrayList<String> listOfImageUrls = new ArrayList<String>();
-		//listOfImageUrls = AtomCrawler.returnAllImageURLs(searchInput.getUrl(), searchInput.isJpg(), searchInput.isPng(), searchInput.isGif());
+		listOfImageUrls = AtomCrawler.returnAllCrawledImageURLs(searchInput.getUrl(), searchInput.isJpg(),
+				searchInput.isPng(), searchInput.isGif());
+
+		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
+		downloadedImageFinalNames = AtomCrawler.downloadImages(listOfImageUrls);
+
+		ArrayList<String> recompressedImageFinalNames = new ArrayList<String>();
+		recompressedImageFinalNames = AtomCrawler.recompressImages(downloadedImageFinalNames, searchInput.getProfile(),
+				searchInput.getLevel());
+
+		// MetaArray
+		ArrayList<ArrayList<String>> allImageResults = new ArrayList<ArrayList<String>>();		
+		for (int j = 0; j < recompressedImageFinalNames.size(); j++) {
+			
+			File file_compressed = new File(recompressedImageFinalNames.get(j));
+			File file_original = new File(downloadedImageFinalNames.get(j));
+			BufferedImage bimg = null;
+			int width = 0;
+			int height = 0;
+			try {
+				bimg = ImageIO.read(new File(downloadedImageFinalNames.get(j)));
+				width = bimg.getWidth();
+				height = bimg.getHeight();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			double compressed_file_size = 0;
+			double original_file_size = 0;
+
+			if (file_compressed.exists()) {
+				compressed_file_size = file_compressed.length();// Double.toString(file_compressed_bytes);
+			} else {
+				System.out.println("the file" + recompressedImageFinalNames.get(j) + " doesnot exist");
+			}
+			if (file_original.exists()) {
+				original_file_size = file_original.length();// Double.toString(file_original.length()/1);
+			} else {
+				System.out.println("the file" + downloadedImageFinalNames.get(j) + " doesnot exist");
+			}
+
+			// --- Get resolution
+			Double compression_ratio = null;
+			try {
+				compression_ratio = 100 - ((compressed_file_size / original_file_size) * 100);// in percentile
+			} catch (ArithmeticException e) {
+				System.err.println("Caught IOException: " + e.getMessage());
+			}
+			
+			
+			ArrayList<String> ImageObject = new ArrayList<String>();
+			ImageObject.add(listOfImageUrls.get(j)); //use URLs for now
+			//ImageObject.add(downloadedImageFinalNames.get(j));
+			ImageObject.add(recompressedImageFinalNames.get(j));
+			ImageObject.add(String.valueOf(original_file_size));
+			ImageObject.add(String.valueOf(compressed_file_size));
+			less_bandwidth += original_file_size - compressed_file_size;
+			average_size_reduction += compression_ratio;
+			ImageObject.add(String.valueOf(String.format("%.1f", compression_ratio)));
+			ImageObject.add(String.valueOf(width) + "x" + String.valueOf(height));
+			allImageResults.add(ImageObject);
+			System.out.println("############");
+			System.out.println("ImageObject:" + ImageObject);			
+		}
+		
+		int size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
+		/*
+		 * for (int i = 0; i < downloadedImageFinalNames.size(); i++) {
+		 * ((Map<String,String>) allImageResults2).put(listOfImageUrls.get(i),
+		 * recompressedImageFinalNames1.get(i)); } //Awatiting deletion, let the judge
+		 * judge!
+		 */
+
+		ArrayList<Integer> report = new ArrayList<Integer>();
+		report.add(downloadedImageFinalNames.size());
+		report.add(less_bandwidth);
+		report.add(size_reduction_percentage);
+
+		mv.addObject("less_bandwidth", less_bandwidth);
+		mv.addObject("size_reduction_percentage", size_reduction_percentage);
+		mv.addObject("allImageResults1", allImageResults);
+		//System.out.println("*******");
+		//System.out.println(searchInput.toString());
+
+		mv.addObject("numberOfImages", downloadedImageFinalNames.size());
+		mv.addObject("report", report);
+		mv.addObject("listOfImageUrls", listOfImageUrls);
+		mv.addObject("recompressedImageFinalNames1", recompressedImageFinalNames);
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		return mv; // return model and view
 
 	}
