@@ -6,10 +6,12 @@
 </head>
 <body>
 <h1>
-	Hello world!  
+	Welcome to AtomJPEG!  
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>
 <a href="http://localhost:8080/atomjpeg/main">Go to main </a><br/>
+
+<img height="600" weight="700"  src="${pageContext.request.contextPath}/resources/images/org/Love.png"/>
 </body>
 </html>
