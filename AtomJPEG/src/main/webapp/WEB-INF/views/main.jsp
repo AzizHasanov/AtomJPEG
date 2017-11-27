@@ -13,7 +13,7 @@ so that form can be auto-filled with model data. --%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>AtomJpeg Main Page</title>
+<title>AtomJPEG Main Page </title>
 
 <!-- css files -->
 <link rel="stylesheet"
