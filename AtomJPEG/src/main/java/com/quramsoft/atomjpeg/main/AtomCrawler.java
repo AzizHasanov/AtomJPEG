@@ -48,7 +48,9 @@ public class AtomCrawler {
 			+ "images" + File.separator + "atom";
 
 	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
-	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
+	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
+//	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
+
 
 	public static ArrayList<String> returnAllCrawledImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
 		// 1
@@ -195,8 +197,8 @@ public class AtomCrawler {
 			 * File file = new File(listOfImageSrcs.get(i)); if (file.length() < 1000){
 			 * continue;//this filters images below 1000 bytes }
 			 */
-			atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
-			atomImageName += ".jpg";
+			//atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
+			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + ".jpg";
 			recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));																													
 
 		}
