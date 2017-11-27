@@ -33,22 +33,27 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-//@SuppressWarnings("unused")
 public class AtomCrawler {
 
-	final static String ORIGINAL_IMAGE_PATH = "AtomJpeg_Spring" + File.separator + "resources" + File.separator
-			+ "images" + File.separator + "org";
-	// final static String ATOM_IMAGE_PATH = "main" + File.separator + "resources" +
-	// File.separator + "temp"+ File.separator + "atom";#break in case of emergency
-	final static String ATOM_IMAGE_PATH = "AtomJpeg_Spring" + File.separator + "resources" + File.separator + "images"
-			+ File.separator + "atom";
-	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
-	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom";
-	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
+	// final static String ORIGINAL_IMAGE_PATH = "AtomJpeg_Spring" + File.separator
+	// + "resources" + File.separator + "images" + File.separator + "org";
+	// final static String ATOM_IMAGE_PATH = "AtomJpeg_Spring" + File.separator +
+	// "resources" + File.separator + "images" + File.separator + "atom";
+	//
+	private static final String USER_HOME = System.getProperty("user.home") + File.separator;
 
-	public static ArrayList<String> returnAllImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
+	final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
+			+ "images" + File.separator + "org";
+	final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
+			+ "images" + File.separator + "atom";
+
+	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
+	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
+	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
+
+	public static ArrayList<String> returnAllCrawledImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
 		// 1
-		ArrayList<String> listOfImageUrls = new ArrayList<String>();
+		ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
 
 		ArrayList<String> imageoptions = new ArrayList<String>();
 		String selectParameter = "";
@@ -83,20 +88,19 @@ public class AtomCrawler {
 					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
 
 				System.out.println(imageLink);
-				listOfImageUrls.add(imageLink);
+				listOfCrawledImageURLs.add(imageLink);
 			}
 
 		} catch (
 
 		IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return listOfImageUrls;
+		return listOfCrawledImageURLs;
 
 	}
 
-	public static ArrayList<String> returnAllImageURLs(String url) {
+	public static ArrayList<String> returnAllCrawledImageURLs(String url) {
 		ArrayList<String> listOfImageUrls = new ArrayList<String>();
 		Document doc;
 		try {
@@ -119,7 +123,6 @@ public class AtomCrawler {
 		} catch (
 
 		IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return listOfImageUrls;
@@ -144,7 +147,7 @@ public class AtomCrawler {
 	public static String downloadImage(String imageUrl, String imageName, String destName) {
 		// 3
 		URL url;
-		String imageFinalName = "";
+		String orgImageFinalName = "";
 		try {
 			url = new URL(imageUrl);
 
@@ -157,18 +160,10 @@ public class AtomCrawler {
 				}
 			}
 
-			String projectRootFolder = System.getProperty("user.dir");
-			// String projectHomeFolder = System.getProperty("user.home");
-
-			// System.out.println("user.dir " + projectRootFolder);
-			// System.out.println("user.home " + projectHomeFolder);
-
-			imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;
-
-			// String imageFinalName = new File(destName).getAbsolutePath() + "/" +
+			orgImageFinalName = destName + File.separator + imageName;
 
 			InputStream is = url.openStream();
-			OutputStream os = new FileOutputStream(imageFinalName);
+			OutputStream os = new FileOutputStream(orgImageFinalName);
 
 			byte[] b = new byte[5120];
 			int length;
@@ -176,7 +171,9 @@ public class AtomCrawler {
 			while ((length = is.read(b)) != -1) {
 				os.write(b, 0, length);
 			}
-			System.out.println("Downloaded image: " + imageFinalName);
+			System.out.println("Downloaded original image: " + orgImageFinalName);
+			System.out.println("***********************");
+
 			is.close();
 			os.close();
 
@@ -185,9 +182,7 @@ public class AtomCrawler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("***********************");
-		System.out.println(imageFinalName);
-		return imageFinalName;
+		return orgImageFinalName;
 
 	}
 
@@ -201,17 +196,10 @@ public class AtomCrawler {
 			 * File file = new File(listOfImageSrcs.get(i)); if (file.length() < 1000){
 			 * continue;//this filters images below 1000 bytes }
 			 */
-			atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
+			// atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
 			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + ".jpg";
 			recompressedImageFinalNames
-					.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));// break
-																													// incase
-																													// of
-																													// emergency
-																													// 2
-			// recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i),
-			// atomImageName, temp_atom_image_path, profile, level));
-			// removing and copying happens here ;)
+					.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));
 
 		}
 		return recompressedImageFinalNames;
@@ -265,24 +253,15 @@ public class AtomCrawler {
 				System.out.println("Error while creating directory for location- " + destName);
 			}
 		}
-		String temp_root = "//";
-		String projectRootFolder = System.getProperty("user.dir");// home directory
-		String imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;// break
-																											// incase of
-																											// emergency
-		// String imageFinalName = "192.168.0.178:8090" + File.separator + "atomjpeg" +
-		// File.separator + "images" + File.separator + "compressed" + File.separator +
-		// destName + File.separator + imageName;
 
-		System.out.println("SourcelImg: " + imageSrc);
-		System.out.println("DestlImg: " + imageFinalName);
+		String atomImageFinalName = destName + File.separator + imageName;
 
-		int sizeOfAtomJPEG = AtomUtils.convertJpegToAtomJPEG(imageSrc, imageFinalName, ao);
+		int sizeOfAtomJPEG = AtomUtils.convertJpegToAtomJPEG(imageSrc, atomImageFinalName, ao);
 		// AtomUtils au = new AtomUtils();
 		// int sizeOfAtomJPEG = au.convertJpegToAtomJPEG(srcImg1, destImg1, ao);
-
+		System.out.println("Converted Atom image: " + atomImageFinalName);
 		System.out.println("sizeOfAtomJPEG: " + sizeOfAtomJPEG);
-		return imageFinalName;
+		return atomImageFinalName;
 
 	}
 
@@ -307,7 +286,6 @@ public class AtomCrawler {
 		long resultSize = AtomUtils.convertJpegToAtomJPEG(srcPath, outputPath, ao);
 
 	}
-	// Grab HTML Form inputs(name & value)
 
 	public void getFormParams(String html) {
 
@@ -322,30 +300,6 @@ public class AtomCrawler {
 			String key = inputElement.attr("name");
 			String value = inputElement.attr("value");
 		}
-	}
-
-	// To download image
-
-	public static String storeImageIntoFS(String imageUrl, String fileName, String relativePath) {
-		String imagePath = null;
-		try {
-			int indexOfCom = imageUrl.lastIndexOf("com/");
-			String mainWebsiteUrl = imageUrl.substring(indexOfCom);
-			// String url =
-			// byte[] bytes =
-			// Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
-
-			byte[] bytes = Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
-
-			ByteBuffer buffer = ByteBuffer.wrap(bytes);
-			// String rootTargetDirectory = fileName + "/" + relativePath; // IMAGE_HOME
-			// imagePath = rootTargetDirectory + "/" + fileName;
-
-			saveByteBufferImage(buffer, relativePath, fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return imagePath;
 	}
 
 	// To save the image
@@ -374,26 +328,71 @@ public class AtomCrawler {
 			e.printStackTrace();
 		}
 	}
+
+	// Image Pop-up
+	/*
+	 * public static void MyModal(){ // Get the modal
+	 * 
+	 * var modal = document.getElementById('myModal');
+	 * 
+	 * // Get the image and insert it inside the modal - use its "alt" text as a
+	 * caption var img = document.getElementById('myImg'); var modalImg =
+	 * document.getElementById("img01"); var captionText =
+	 * document.getElementById("caption"); img.onclick = function(){
+	 * modal.style.display = "block"; modalImg.src = this.src; captionText.innerHTML
+	 * = this.alt; }
+	 * 
+	 * // Get the <span> element that closes the modal var span =
+	 * document.getElementsByClassName("close")[0];
+	 * 
+	 * // When the user clicks on <span> (x), close the modal span.onclick =
+	 * function() { modal.style.display = "none"; } }
+	 */
+
+	// To download image
+	public static String storeImageIntoFS(String imageUrl, String fileName, String relativePath) {
+		String imagePath = null;
+		try {
+			int indexOfCom = imageUrl.lastIndexOf("com/");
+			String mainWebsiteUrl = imageUrl.substring(indexOfCom);
+			// String url =
+			// byte[] bytes =
+			// Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
+
+			byte[] bytes = Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
+
+			ByteBuffer buffer = ByteBuffer.wrap(bytes);
+			// String rootTargetDirectory = fileName + "/" + relativePath; // IMAGE_HOME
+			// imagePath = rootTargetDirectory + "/" + fileName;
+
+			saveByteBufferImage(buffer, relativePath, fileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return imagePath;
+	}
+
+	// Image Pop-up
+	/*
+	 * public static void MyModal(){ // Get the modal
+	 * 
+	 * var modal = document.getElementById('myModal');
+	 * 
+	 * // Get the image and insert it inside the modal - use its "alt" text as a
+	 * caption var img = document.getElementById('myImg'); var modalImg =
+	 * document.getElementById("img01"); var captionText =
+	 * document.getElementById("caption"); img.onclick = function(){
+	 * modal.style.display = "block"; modalImg.src = this.src; captionText.innerHTML
+	 * = this.alt; }
+	 * 
+	 * // Get the <span> element that closes the modal var span =
+	 * document.getElementsByClassName("close")[0];
+	 * 
+	 * // When the user clicks on <span> (x), close the modal span.onclick =
+	 * function() { modal.style.display = "none"; } }
+	 */
+
 }
-// Image Pop-up
-/*
- * public static void MyModal(){ // Get the modal
- * 
- * var modal = document.getElementById('myModal');
- * 
- * // Get the image and insert it inside the modal - use its "alt" text as a
- * caption var img = document.getElementById('myImg'); var modalImg =
- * document.getElementById("img01"); var captionText =
- * document.getElementById("caption"); img.onclick = function(){
- * modal.style.display = "block"; modalImg.src = this.src; captionText.innerHTML
- * = this.alt; }
- * 
- * // Get the <span> element that closes the modal var span =
- * document.getElementsByClassName("close")[0];
- * 
- * // When the user clicks on <span> (x), close the modal span.onclick =
- * function() { modal.style.display = "none"; } }
- */
 
 /*
  * /////////////////////////////////////////////////////////////////////////////

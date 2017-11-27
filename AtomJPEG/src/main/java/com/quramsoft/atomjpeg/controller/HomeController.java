@@ -1,10 +1,16 @@
 package com.quramsoft.atomjpeg.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.quramsoft.atomjpeg.main.AtomCrawler;
 import com.quramsoft.atomjpeg.model.SearchInput;
 
 /**
@@ -25,7 +32,8 @@ public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-	private static final String USER_HOME = System.getProperty("user.home");
+
+	private static final String USER_HOME = System.getProperty("user.home") + File.separator;
 	private static final String USER_DIR = System.getProperty("user.dir");
 	private static final String USER_NAME = System.getProperty("user.name");
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
@@ -34,6 +42,11 @@ public class HomeController {
 	private static final String SERVER_IP = "http://192.168.0.178";
 	private static final String SERVER_PORT = "8090";
 
+
+	final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
+			+ "images" + File.separator + "org";
+	final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
+			+ "images" + File.separator + "atom";
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -67,6 +80,49 @@ public class HomeController {
 
 		model.addAttribute("searchinput", new SearchInput());
 
+		// if new request delete the files of original and compressed images
+
+		File org = new File(ORIGINAL_IMAGE_PATH);
+		File atom = new File(ATOM_IMAGE_PATH);
+		// File org_cached = new File(cached_original_image_path);
+		// File atom_cached = new File(cached_compressed_image_path);
+
+		File[] org_listOfFiles = org.listFiles();
+		File[] atom_listOfFiles = atom.listFiles();
+		// File[] org_cached_listOfFiles = org_cached.listFiles();
+		// File[] atom_cached_listOfFiles = atom_cached.listFiles();
+
+		if (org.isDirectory() && atom.isDirectory()) {
+			for (int i = 0; i < org_listOfFiles.length; i++) {
+				if (org_listOfFiles[i].isFile()) {
+					System.out.println("File " + org_listOfFiles[i].getName() + "is getting deleted");
+					org_listOfFiles[i].delete();
+				}
+			}
+			for (int i = 0; i < atom_listOfFiles.length; i++) {
+				if (atom_listOfFiles[i].isFile()) {
+					System.out.println("File " + atom_listOfFiles[i].getName() + "is getting deleted");
+					atom_listOfFiles[i].delete();
+				}
+			}
+		}
+
+		// if (org_cached.isDirectory() && atom_cached.isDirectory()) {
+		// for (int i = 0; i < org_cached_listOfFiles.length; i++) {
+		// if (org_cached_listOfFiles[i].isFile()) {
+		// System.out.println("File " + org_cached_listOfFiles[i].getName() + "is
+		// getting deleted");
+		// org_cached_listOfFiles[i].delete();
+		// }
+		// }
+		// for (int i = 0; i < atom_cached_listOfFiles.length; i++) {
+		// if (atom_cached_listOfFiles[i].isFile()) {
+		// System.out.println("File " + atom_cached_listOfFiles[i].getName() + "is
+		// getting deleted");
+		// atom_cached_listOfFiles[i].delete();
+		// }
+		// }
+
 		return "main"; // dynamic form using Spring's form tag library
 
 	}
@@ -75,7 +131,100 @@ public class HomeController {
 	public @ResponseBody ModelAndView resultForm(SearchInput searchInput) {
 		ModelAndView mv = new ModelAndView("result");
 
-		return mv; // return model and view
+		int less_bandwidth = 0;
+		int average_size_reduction = 0;
+
+		ArrayList<String> listOfImageUrls = new ArrayList<String>();
+		listOfImageUrls = AtomCrawler.returnAllCrawledImageURLs(searchInput.getUrl(), searchInput.isJpg(),
+				searchInput.isPng(), searchInput.isGif());
+
+		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
+		downloadedImageFinalNames = AtomCrawler.downloadImages(listOfImageUrls);
+
+		ArrayList<String> recompressedImageFinalNames = new ArrayList<String>();
+		recompressedImageFinalNames = AtomCrawler.recompressImages(downloadedImageFinalNames, searchInput.getProfile(),
+				searchInput.getLevel());
+
+		// MetaArray
+		ArrayList<ArrayList<String>> allImageResults = new ArrayList<ArrayList<String>>();		
+		for (int j = 0; j < recompressedImageFinalNames.size(); j++) {
+			
+			File file_compressed = new File(recompressedImageFinalNames.get(j));
+			File file_original = new File(downloadedImageFinalNames.get(j));
+			BufferedImage bimg = null;
+			int width = 0;
+			int height = 0;
+			try {
+				bimg = ImageIO.read(new File(downloadedImageFinalNames.get(j)));
+				width = bimg.getWidth();
+				height = bimg.getHeight();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			double compressed_file_size = 0;
+			double original_file_size = 0;
+
+			if (file_compressed.exists()) {
+				compressed_file_size = file_compressed.length();// Double.toString(file_compressed_bytes);
+			} else {
+				System.out.println("the file" + recompressedImageFinalNames.get(j) + " doesnot exist");
+			}
+			if (file_original.exists()) {
+				original_file_size = file_original.length();// Double.toString(file_original.length()/1);
+			} else {
+				System.out.println("the file" + downloadedImageFinalNames.get(j) + " doesnot exist");
+			}
+
+			// --- Get resolution
+			Double compression_ratio = null;
+			try {
+				compression_ratio = 100 - ((compressed_file_size / original_file_size) * 100);// in percentile
+			} catch (ArithmeticException e) {
+				System.err.println("Caught IOException: " + e.getMessage());
+			}
+			
+			
+			ArrayList<String> ImageObject = new ArrayList<String>();
+			ImageObject.add(listOfImageUrls.get(j)); //use URLs for now
+			//ImageObject.add(downloadedImageFinalNames.get(j));
+			ImageObject.add(recompressedImageFinalNames.get(j));
+			ImageObject.add(String.valueOf(original_file_size));
+			ImageObject.add(String.valueOf(compressed_file_size));
+			less_bandwidth += original_file_size - compressed_file_size;
+			average_size_reduction += compression_ratio;
+			ImageObject.add(String.valueOf(String.format("%.1f", compression_ratio)));
+			ImageObject.add(String.valueOf(width) + "x" + String.valueOf(height));
+			allImageResults.add(ImageObject);
+			System.out.println("############");
+			System.out.println("ImageObject:" + ImageObject);			
+		}
+		
+		int size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
+		/*
+		 * for (int i = 0; i < downloadedImageFinalNames.size(); i++) {
+		 * ((Map<String,String>) allImageResults2).put(listOfImageUrls.get(i),
+		 * recompressedImageFinalNames1.get(i)); } //Awatiting deletion, let the judge
+		 * judge!
+		 */
+
+		ArrayList<Integer> report = new ArrayList<Integer>();
+		report.add(downloadedImageFinalNames.size());
+		report.add(less_bandwidth);
+		report.add(size_reduction_percentage);
+
+		mv.addObject("less_bandwidth", less_bandwidth);
+		mv.addObject("size_reduction_percentage", size_reduction_percentage);
+		mv.addObject("allImageResults1", allImageResults);
+		//System.out.println("*******");
+		//System.out.println(searchInput.toString());
+
+		mv.addObject("numberOfImages", downloadedImageFinalNames.size());
+		mv.addObject("report", report);
+		mv.addObject("listOfImageUrls", listOfImageUrls);
+		mv.addObject("recompressedImageFinalNames1", recompressedImageFinalNames);
+		
+				return mv; // return model and view
 
 	}
 
