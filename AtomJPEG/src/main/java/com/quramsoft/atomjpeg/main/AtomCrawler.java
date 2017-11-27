@@ -1,0 +1,408 @@
+/**
+ * 
+ */
+package com.quramsoft.atomjpeg.main;
+
+import org.jsoup.Jsoup;
+//import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.atom.utils.AtomUtils;
+import com.atom.utils.AtomUtils.AtomOptions;
+
+import java.awt.List;
+//import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+//@SuppressWarnings("unused")
+public class AtomCrawler {
+
+	final static String ORIGINAL_IMAGE_PATH = "AtomJpeg_Spring" + File.separator + "resources" + File.separator +"images" + File.separator +"org";
+//	final static String ATOM_IMAGE_PATH = "main" + File.separator + "resources" + File.separator + "temp"+ File.separator + "atom";#break in case of emergency
+	final static String ATOM_IMAGE_PATH =  "AtomJpeg_Spring" + File.separator + "resources" + File.separator +"images" + File.separator + "atom";
+	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
+	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom";
+	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
+
+	public static ArrayList<String> returnAllImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
+		//1
+		ArrayList<String> listOfImageUrls = new ArrayList<String>();
+
+		ArrayList<String> imageoptions = new ArrayList<String>();
+		String selectParameter = "";
+		if (bPng == true)
+			imageoptions.add("png");
+		if (bJpg == true)
+			imageoptions.add("jpe?g");
+		if (bGif == true)
+			imageoptions.add("gif");
+
+		for (int i = 0; i < imageoptions.size(); i++) {
+
+			if (i > 0) selectParameter += "|";
+			selectParameter += imageoptions.get(i);
+
+		}
+
+		String selectStatement = "img[src~=(?i)\\.(" + selectParameter + ")]";
+		Document doc;
+		try {
+			doc = Jsoup.connect(url).get();
+			// Elements images = doc.select("img[src~=(?i)\\.(png|jpe?g|gif)]");
+			Elements images = doc.select(selectStatement);
+			System.out.println("Total number of image links:" + images.size());
+			int i = 0;
+			for (Element image : images) {
+				String imageLink = image.attr("src");
+				if (imageLink.length() > 0 & imageLink.length() < 4) {
+					imageLink = doc.baseUri() + imageLink.substring(1);
+				} else if (!imageLink.substring(0, 4).equals("http"))
+					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
+
+				System.out.println(imageLink);
+				listOfImageUrls.add(imageLink);
+			}
+
+		} catch (
+
+		IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return listOfImageUrls;
+
+	}
+
+	public static ArrayList<String> returnAllImageURLs(String url) {
+		ArrayList<String> listOfImageUrls = new ArrayList<String>();
+		Document doc;
+		try {
+			doc = Jsoup.connect(url).get();
+			// Elements images = doc.select("img[src~=(?i)\\.(png|jpe?g|gif)]");
+			Elements images = doc.select("img[src~=(?i)\\.(jpe?g)]"); // Only Jpeg or Jpg image files
+			System.out.println("Total number of image links:" + images.size());
+			int i = 0;
+			for (Element image : images) {
+				String imageLink = image.attr("src");
+				if (imageLink.length() > 0 & imageLink.length() < 4) {
+					imageLink = doc.baseUri() + imageLink.substring(1);
+				} else if (!imageLink.substring(0, 4).equals("http"))
+					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
+
+				System.out.println(imageLink);
+				listOfImageUrls.add(imageLink);
+			}
+
+		} catch (
+
+		IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return listOfImageUrls;
+
+	}
+
+	
+
+	// Download images using url 
+	public static ArrayList<String> downloadImages(ArrayList<String> listOfImageUrls) {
+		//2
+		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
+		int numberOfImages = listOfImageUrls.size();
+
+		for (int i = 0; i < numberOfImages; i++) {
+			downloadedImageFinalNames.add(downloadImage(listOfImageUrls.get(i),
+					ORIGINAL_IMAGE_NAME_TEMPLATE + i + ".jpg", ORIGINAL_IMAGE_PATH));
+		}
+		return downloadedImageFinalNames;
+
+	}
+
+	// Download image using url 
+	public static String downloadImage(String imageUrl, String imageName, String destName) {
+		//3
+		URL url;
+		String imageFinalName = "";
+		try {
+			url = new URL(imageUrl);
+
+			// String fileName = url.getFile();
+			File rootTargetDir = new File(destName);
+			if (!rootTargetDir.exists()) {
+				boolean created = rootTargetDir.mkdirs();
+				if (!created) {
+					System.out.println("Error while creating directory for location- " + destName);
+				}
+			}
+
+			String projectRootFolder = System.getProperty("user.dir");
+			// String projectHomeFolder = System.getProperty("user.home");
+
+			// System.out.println("user.dir " + projectRootFolder);
+			// System.out.println("user.home " + projectHomeFolder);
+
+			imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;
+			
+			
+			// String imageFinalName = new File(destName).getAbsolutePath() + "/" +
+
+			InputStream is = url.openStream();
+			OutputStream os = new FileOutputStream(imageFinalName);
+
+			byte[] b = new byte[5120];
+			int length;
+
+			while ((length = is.read(b)) != -1) {
+				os.write(b, 0, length);
+			}
+			System.out.println("Downloaded image: " + imageFinalName);
+			is.close();
+			os.close();
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("***********************");
+		System.out.println(imageFinalName);
+		return imageFinalName;
+
+	}
+
+	// Image Compressor (Re-compress images by AtomJPEG (example))
+	public static ArrayList<String> recompressImages(ArrayList<String> listOfImageSrcs, String profile, String level) {
+		ArrayList<String> recompressedImageFinalNames = new ArrayList<String>();
+		int numberOfImages = listOfImageSrcs.size();
+		String atomImageName;
+		for (int i = 0; i < numberOfImages; i++) {
+			/*File file = new File(listOfImageSrcs.get(i));
+			if (file.length() < 1000){
+				continue;//this filters images below 1000 bytes
+			}*/
+			atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
+			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + ".jpg";
+			recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));// break incase of emergency 2
+			//recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i), atomImageName, temp_atom_image_path, profile, level));
+			// removing and copying happens here ;)
+			
+		}
+		return recompressedImageFinalNames;
+
+	}
+
+	public static String recompressImage(String imageSrc, String imageName, String destName, String profile,
+			String level) {
+
+		AtomOptions ao = new AtomOptions();
+
+		switch (profile) {
+		case "Fast":
+			ao.profile = AtomUtils.PROFILE_FAST;
+			break;
+		case "Baseline":
+			ao.profile = AtomUtils.PROFILE_BASELINE;
+			break;
+		case "Main":
+			ao.profile = AtomUtils.PROFILE_MAIN;
+			break;
+		case "High":
+			ao.profile = AtomUtils.PROFILE_HIGH;
+			break;
+
+		}
+
+		switch (level) {
+		case "High Quality":
+			ao.level = AtomUtils.HIGH_QUALITY;
+			break;
+		case "Normal":
+			ao.level = AtomUtils.NORMAL_QUALITY;
+			break;
+		case "High Compression":
+			ao.level = AtomUtils.HIGH_COMPRESSION;
+			break;
+		case "Extreme":
+			ao.level = AtomUtils.EXTREME_COMPRESSION;
+			break;
+
+		}
+		ao.keepFileFormat = 1; // it must be 1
+		ao.width = 0; // 0 - converted to the same size as the original width
+		ao.height = 0; // 0 - converted to the same size as the original height
+
+		File rootTargetDir = new File(destName);
+		if (!rootTargetDir.exists()) {
+			boolean created = rootTargetDir.mkdirs();
+			if (!created) {
+				System.out.println("Error while creating directory for location- " + destName);
+			}
+		}
+		String temp_root = "//";
+		String projectRootFolder = System.getProperty("user.dir");// home directory
+		String imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;// break incase of emergency
+		//String imageFinalName = "192.168.0.178:8090" + File.separator + "atomjpeg" + File.separator + "images" + File.separator + "compressed" + File.separator + destName + File.separator + imageName;
+		
+		System.out.println("SourcelImg: " + imageSrc);
+		System.out.println("DestlImg: " + imageFinalName);
+
+		int sizeOfAtomJPEG = AtomUtils.convertJpegToAtomJPEG(imageSrc, imageFinalName, ao);
+		// AtomUtils au = new AtomUtils();
+		// int sizeOfAtomJPEG = au.convertJpegToAtomJPEG(srcImg1, destImg1, ao);
+
+		System.out.println("sizeOfAtomJPEG: " + sizeOfAtomJPEG);
+		return imageFinalName;
+
+	}
+	
+	public static void main(String[] args) throws IOException {
+
+		// returnAllImageURLs("http://www.quramsoft.com");
+	}
+
+	
+	public static void AtomJPEG() {
+		AtomOptions ao = new AtomOptions();
+		ao.profile = AtomUtils.PROFILE_MAIN;
+		ao.level = AtomUtils.NORMAL_QUALITY;
+		ao.keepFileFormat = 1; // it must be 1
+		ao.width = 0;
+		ao.height = 0;
+
+		// (If you specify the width and height to zero is converted to the same size as
+		// the original resolution.)
+
+		String outputPath = null;
+		String srcPath = null;
+		long resultSize = AtomUtils.convertJpegToAtomJPEG(srcPath, outputPath, ao);
+
+}
+	// Grab HTML Form inputs(name & value)
+
+	public void getFormParams(String html) {
+
+		Document doc = Jsoup.parse(html);
+
+		// HTML form id
+		Element loginform = doc.getElementById("your_form_id");
+		Elements inputElements = loginform.getElementsByTag("input");
+
+		ArrayList<String> paramList = new ArrayList<String>();
+		for (Element inputElement : inputElements) {
+			String key = inputElement.attr("name");
+			String value = inputElement.attr("value");
+		}
+	}
+
+	// To download image
+
+	public static String storeImageIntoFS(String imageUrl, String fileName, String relativePath) {
+		String imagePath = null;
+		try {
+			int indexOfCom = imageUrl.lastIndexOf("com/");
+			String mainWebsiteUrl = imageUrl.substring(indexOfCom);
+			// String url =
+			// byte[] bytes =
+			// Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
+
+			byte[] bytes = Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
+
+			ByteBuffer buffer = ByteBuffer.wrap(bytes);
+			// String rootTargetDirectory = fileName + "/" + relativePath; // IMAGE_HOME
+			// imagePath = rootTargetDirectory + "/" + fileName;
+
+			saveByteBufferImage(buffer, relativePath, fileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return imagePath;
+	}
+
+	// To save the image
+	public static void saveByteBufferImage(ByteBuffer imageDataBytes, String rootTargetDirectory,
+			String savedFileName) {
+		String uploadInputFile = rootTargetDirectory + savedFileName;
+
+		File rootTargetDir = new File(rootTargetDirectory);
+		if (!rootTargetDir.exists()) {
+			boolean created = rootTargetDir.mkdirs();
+			if (!created) {
+				System.out.println("Error while creating directory for location- " + rootTargetDirectory);
+			}
+		}
+		String[] fileNameParts = savedFileName.split("\\.");
+		String format = fileNameParts[fileNameParts.length - 1];
+
+		File file = new File(uploadInputFile);
+		BufferedImage bufferedImage;
+
+		InputStream in = new ByteArrayInputStream(imageDataBytes.array());
+		try {
+			bufferedImage = ImageIO.read(in);
+			ImageIO.write(bufferedImage, format, file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+}
+	
+	//Image Pop-up
+	/*public static void MyModal(){
+		// Get the modal
+		
+		var modal = document.getElementById('myModal');
+
+		// Get the image and insert it inside the modal - use its "alt" text as a caption
+		var img = document.getElementById('myImg');
+		var modalImg = document.getElementById("img01");
+		var captionText = document.getElementById("caption");
+		img.onclick = function(){
+		    modal.style.display = "block";
+		    modalImg.src = this.src;
+		    captionText.innerHTML = this.alt;
+		}
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() { 
+		  modal.style.display = "none";
+		}
+	}*/
+
+}
+
+/*
+ * /////////////////////////////////////////////////////////////////////////////
+ * //////////////////
+		/*
+		 * When you receive an image crawl request, empty the temporary folder. Please
+		 * create a temporary directory of crawled images and save them in there.
+		 * example) if temporary directory name is temp temp/org/crawled_001.jpg
+		 * temp/org/crawled_002.jpg temp/org/crawled_003.jpg and so on... Then
+		 * recompressed images are save into atom directory ex)
+		 * temp/atom/crawled_001_atom.jpg temp/atom/crawled_002_atom.jpg and so on... If
+		 * you press the download button, please compress all temp/org, temp/atom images
+		 * into one zip file and download the zip file. (please refer to page 3 of PPT)
+		 */
+
