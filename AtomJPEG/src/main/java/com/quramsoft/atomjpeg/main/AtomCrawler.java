@@ -36,15 +36,18 @@ import javax.imageio.ImageIO;
 //@SuppressWarnings("unused")
 public class AtomCrawler {
 
-	final static String ORIGINAL_IMAGE_PATH = "AtomJpeg_Spring" + File.separator + "resources" + File.separator +"images" + File.separator +"org";
-//	final static String ATOM_IMAGE_PATH = "main" + File.separator + "resources" + File.separator + "temp"+ File.separator + "atom";#break in case of emergency
-	final static String ATOM_IMAGE_PATH =  "AtomJpeg_Spring" + File.separator + "resources" + File.separator +"images" + File.separator + "atom";
+	final static String ORIGINAL_IMAGE_PATH = "AtomJpeg_Spring" + File.separator + "resources" + File.separator
+			+ "images" + File.separator + "org";
+	// final static String ATOM_IMAGE_PATH = "main" + File.separator + "resources" +
+	// File.separator + "temp"+ File.separator + "atom";#break in case of emergency
+	final static String ATOM_IMAGE_PATH = "AtomJpeg_Spring" + File.separator + "resources" + File.separator + "images"
+			+ File.separator + "atom";
 	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
 	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom";
 	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
 
 	public static ArrayList<String> returnAllImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
-		//1
+		// 1
 		ArrayList<String> listOfImageUrls = new ArrayList<String>();
 
 		ArrayList<String> imageoptions = new ArrayList<String>();
@@ -58,7 +61,8 @@ public class AtomCrawler {
 
 		for (int i = 0; i < imageoptions.size(); i++) {
 
-			if (i > 0) selectParameter += "|";
+			if (i > 0)
+				selectParameter += "|";
 			selectParameter += imageoptions.get(i);
 
 		}
@@ -122,11 +126,9 @@ public class AtomCrawler {
 
 	}
 
-	
-
-	// Download images using url 
+	// Download images using url
 	public static ArrayList<String> downloadImages(ArrayList<String> listOfImageUrls) {
-		//2
+		// 2
 		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
 		int numberOfImages = listOfImageUrls.size();
 
@@ -138,9 +140,9 @@ public class AtomCrawler {
 
 	}
 
-	// Download image using url 
+	// Download image using url
 	public static String downloadImage(String imageUrl, String imageName, String destName) {
-		//3
+		// 3
 		URL url;
 		String imageFinalName = "";
 		try {
@@ -162,8 +164,7 @@ public class AtomCrawler {
 			// System.out.println("user.home " + projectHomeFolder);
 
 			imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;
-			
-			
+
 			// String imageFinalName = new File(destName).getAbsolutePath() + "/" +
 
 			InputStream is = url.openStream();
@@ -196,16 +197,22 @@ public class AtomCrawler {
 		int numberOfImages = listOfImageSrcs.size();
 		String atomImageName;
 		for (int i = 0; i < numberOfImages; i++) {
-			/*File file = new File(listOfImageSrcs.get(i));
-			if (file.length() < 1000){
-				continue;//this filters images below 1000 bytes
-			}*/
+			/*
+			 * File file = new File(listOfImageSrcs.get(i)); if (file.length() < 1000){
+			 * continue;//this filters images below 1000 bytes }
+			 */
 			atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
 			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + ".jpg";
-			recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));// break incase of emergency 2
-			//recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i), atomImageName, temp_atom_image_path, profile, level));
+			recompressedImageFinalNames
+					.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));// break
+																													// incase
+																													// of
+																													// emergency
+																													// 2
+			// recompressedImageFinalNames.add(recompressImage(listOfImageSrcs.get(i),
+			// atomImageName, temp_atom_image_path, profile, level));
 			// removing and copying happens here ;)
-			
+
 		}
 		return recompressedImageFinalNames;
 
@@ -260,9 +267,13 @@ public class AtomCrawler {
 		}
 		String temp_root = "//";
 		String projectRootFolder = System.getProperty("user.dir");// home directory
-		String imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;// break incase of emergency
-		//String imageFinalName = "192.168.0.178:8090" + File.separator + "atomjpeg" + File.separator + "images" + File.separator + "compressed" + File.separator + destName + File.separator + imageName;
-		
+		String imageFinalName = projectRootFolder + File.separator + destName + File.separator + imageName;// break
+																											// incase of
+																											// emergency
+		// String imageFinalName = "192.168.0.178:8090" + File.separator + "atomjpeg" +
+		// File.separator + "images" + File.separator + "compressed" + File.separator +
+		// destName + File.separator + imageName;
+
 		System.out.println("SourcelImg: " + imageSrc);
 		System.out.println("DestlImg: " + imageFinalName);
 
@@ -274,13 +285,12 @@ public class AtomCrawler {
 		return imageFinalName;
 
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 
 		// returnAllImageURLs("http://www.quramsoft.com");
 	}
 
-	
 	public static void AtomJPEG() {
 		AtomOptions ao = new AtomOptions();
 		ao.profile = AtomUtils.PROFILE_MAIN;
@@ -296,7 +306,7 @@ public class AtomCrawler {
 		String srcPath = null;
 		long resultSize = AtomUtils.convertJpegToAtomJPEG(srcPath, outputPath, ao);
 
-}
+	}
 	// Grab HTML Form inputs(name & value)
 
 	public void getFormParams(String html) {
@@ -363,46 +373,36 @@ public class AtomCrawler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 }
-	
-	//Image Pop-up
-	/*public static void MyModal(){
-		// Get the modal
-		
-		var modal = document.getElementById('myModal');
-
-		// Get the image and insert it inside the modal - use its "alt" text as a caption
-		var img = document.getElementById('myImg');
-		var modalImg = document.getElementById("img01");
-		var captionText = document.getElementById("caption");
-		img.onclick = function(){
-		    modal.style.display = "block";
-		    modalImg.src = this.src;
-		    captionText.innerHTML = this.alt;
-		}
-
-		// Get the <span> element that closes the modal
-		var span = document.getElementsByClassName("close")[0];
-
-		// When the user clicks on <span> (x), close the modal
-		span.onclick = function() { 
-		  modal.style.display = "none";
-		}
-	}*/
-
-}
+// Image Pop-up
+/*
+ * public static void MyModal(){ // Get the modal
+ * 
+ * var modal = document.getElementById('myModal');
+ * 
+ * // Get the image and insert it inside the modal - use its "alt" text as a
+ * caption var img = document.getElementById('myImg'); var modalImg =
+ * document.getElementById("img01"); var captionText =
+ * document.getElementById("caption"); img.onclick = function(){
+ * modal.style.display = "block"; modalImg.src = this.src; captionText.innerHTML
+ * = this.alt; }
+ * 
+ * // Get the <span> element that closes the modal var span =
+ * document.getElementsByClassName("close")[0];
+ * 
+ * // When the user clicks on <span> (x), close the modal span.onclick =
+ * function() { modal.style.display = "none"; } }
+ */
 
 /*
  * /////////////////////////////////////////////////////////////////////////////
- * //////////////////
-		/*
-		 * When you receive an image crawl request, empty the temporary folder. Please
-		 * create a temporary directory of crawled images and save them in there.
-		 * example) if temporary directory name is temp temp/org/crawled_001.jpg
-		 * temp/org/crawled_002.jpg temp/org/crawled_003.jpg and so on... Then
-		 * recompressed images are save into atom directory ex)
-		 * temp/atom/crawled_001_atom.jpg temp/atom/crawled_002_atom.jpg and so on... If
-		 * you press the download button, please compress all temp/org, temp/atom images
-		 * into one zip file and download the zip file. (please refer to page 3 of PPT)
-		 */
-
+ * ////////////////// /* When you receive an image crawl request, empty the
+ * temporary folder. Please create a temporary directory of crawled images and
+ * save them in there. example) if temporary directory name is temp
+ * temp/org/crawled_001.jpg temp/org/crawled_002.jpg temp/org/crawled_003.jpg
+ * and so on... Then recompressed images are save into atom directory ex)
+ * temp/atom/crawled_001_atom.jpg temp/atom/crawled_002_atom.jpg and so on... If
+ * you press the download button, please compress all temp/org, temp/atom images
+ * into one zip file and download the zip file. (please refer to page 3 of PPT)
+ */
