@@ -10,10 +10,8 @@
 	<P>The time on the server is ${serverTime}.</P>
 	<a href="http://localhost:8080/atomjpeg/main">Go to main </a>
 	<br />
-	<img src="<c:url value ="/images/org/crawled_0.jpg" />" >
-	<br />
-	<img height="600" weight="700"
-		src="${pageContext.request.contextPath}/resources/images/org/Love.png" />
+	
+	<img height="600" weight="700" src="${pageContext.request.contextPath}/resources/images/org/Love.png" />
 		
 </body>
 </html>

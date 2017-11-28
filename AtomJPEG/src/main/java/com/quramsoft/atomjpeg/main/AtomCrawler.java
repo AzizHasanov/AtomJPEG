@@ -42,6 +42,9 @@ public class AtomCrawler {
 	final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
 			+ "images" + File.separator + "atom";
 
+//	final static String ORIGINAL_IMAGE_PATH = File.separator + "images" + File.separator + "org";
+//	final static String ATOM_IMAGE_PATH = File.separator + "images" + File.separator + "atom";
+//	
 	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
 	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
 	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";

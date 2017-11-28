@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="results"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
 <head>
 <title>Results</title>
@@ -60,7 +61,7 @@
 				<a href="http://localhost:8080/atomjpeg/main">Home</a>
 				<h4>All Searched Images:</h4>
 			    		<div class="row one_image_result">
-						<c:forEach items="${allImageResults1}" var="tempItem" varStatus="loop_in_modal">
+						<c:forEach items="${allImageResults}" var="tempItem" varStatus="loop_in_modal">
 							<c:set var="element" value="${tempItem}"/>
 							<!--  modal is below  -->
 							<!-- Modal HTML -->
@@ -69,13 +70,14 @@
 							            <div class="modal-content">
 							                <div class="modal-header">
 							                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							                    <h4 class="modal-title">${element[0]}</h4>
+							                    <h4 class="modal-title">${element[6]}</h4>
 							                </div>
 							                <div class="modal-body">
 							                    <div class="20_container"> 
-													<img src="${element[0]}" class="image1 img-responsive image1" alt="Original Image">
+													<img src="<c:url value ="${element[0]}" />"  class="image1 img-responsive image1" alt="Original Image">
 												 
-											 		<img src="${element[1]}" class="image2 img-responsive image2" alt="Modified Image">
+											 		<img src="<c:url value ="${element[1]}" />" class="image2 img-responsive image2" alt="Modified Image" > 
+											 		
 									    </div>		 
 											
 													<span class="cd-handle"></span>
@@ -120,10 +122,10 @@
 							 <div class= "row"> 
 							
 							  <div class="col-md-4">
-								<img class="img-responsive" src="${element[0]}" />
+								<img class="img-responsive" src="<c:url value ="${element[6]}" />"  />
 							  </div>
 							  <div class="col-md-4">
-								<p style= "overflow:auto;word-wrap:break-word;">${element[0]} </p>
+								<p style= "overflow:auto;word-wrap:break-word;">${element[6]} </p>
 								    
 							    <!--Images Information-->
 							    <table class="table table-inverse">
@@ -154,7 +156,9 @@
 							  </table>
 							 </div>
 							 <div class="col-md-4" style="float: right;">
-								<img class="img-responsive" src="${element[1]}" />
+								
+								<img src="<c:url value ="${element[1]}" />" > 
+								
 							 </div>
 					  </div></a>				
 					</c:forEach>

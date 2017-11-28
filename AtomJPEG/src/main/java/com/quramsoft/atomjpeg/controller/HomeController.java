@@ -47,6 +47,10 @@ public class HomeController {
 			+ "images" + File.separator + "org";
 	final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
 			+ "images" + File.separator + "atom";
+	
+	final static String ORIGINAL_IMAGE_PATH_JSP = File.separator + "images" + File.separator + "org";
+	final static String ATOM_IMAGE_PATH_JSP = File.separator + "images" + File.separator + "atom";
+	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -127,6 +131,7 @@ public class HomeController {
 
 	}
 
+	
 	@RequestMapping(value = "/main", method = RequestMethod.POST)
 	public @ResponseBody ModelAndView resultForm(SearchInput searchInput) {
 		ModelAndView mv = new ModelAndView("result");
@@ -138,13 +143,22 @@ public class HomeController {
 		listOfImageUrls = AtomCrawler.returnAllCrawledImageURLs(searchInput.getUrl(), searchInput.isJpg(),
 				searchInput.isPng(), searchInput.isGif());
 
+		System.out.println("STEP 1: All images URLs crawled! ");
+
+		
 		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
 		downloadedImageFinalNames = AtomCrawler.downloadImages(listOfImageUrls);
 
+		System.out.println("STEP 2: All images downloaded! ");
+		
 		ArrayList<String> recompressedImageFinalNames = new ArrayList<String>();
 		recompressedImageFinalNames = AtomCrawler.recompressImages(downloadedImageFinalNames, searchInput.getProfile(),
 				searchInput.getLevel());
 
+		System.out.println("STEP 3: All images recompressed! ");
+
+		
+		
 		// MetaArray
 		ArrayList<ArrayList<String>> allImageResults = new ArrayList<ArrayList<String>>();		
 		for (int j = 0; j < recompressedImageFinalNames.size(); j++) {
@@ -185,16 +199,34 @@ public class HomeController {
 			}
 			
 			
+			String recompressImageLocForJsp;
+			
+			String[] temp_names_recompress = recompressedImageFinalNames.get(j).split("/");
+			recompressImageLocForJsp = "/" + temp_names_recompress[temp_names_recompress.length - 3];
+			recompressImageLocForJsp += "/" + temp_names_recompress[temp_names_recompress.length - 2];
+			recompressImageLocForJsp += "/" + temp_names_recompress[temp_names_recompress.length - 1];
+			
+			String originalImageLocForJsp;
+			
+			String[] temp_names_original = downloadedImageFinalNames.get(j).split("/");
+			originalImageLocForJsp = "/" + temp_names_original[temp_names_original.length - 3];
+			originalImageLocForJsp += "/" + temp_names_original[temp_names_original.length - 2];
+			originalImageLocForJsp += "/" + temp_names_original[temp_names_original.length - 1];
+			
 			ArrayList<String> ImageObject = new ArrayList<String>();
-			ImageObject.add(listOfImageUrls.get(j)); //use URLs for now
-			//ImageObject.add(downloadedImageFinalNames.get(j));
-			ImageObject.add(recompressedImageFinalNames.get(j));
+			//ImageObject.add(listOfImageUrls.get(j));
+			ImageObject.add(originalImageLocForJsp);
+			//ImageObject.add(recompressedImageFinalNames.get(j));
+			ImageObject.add(recompressImageLocForJsp);
 			ImageObject.add(String.valueOf(original_file_size));
 			ImageObject.add(String.valueOf(compressed_file_size));
+			
 			less_bandwidth += original_file_size - compressed_file_size;
 			average_size_reduction += compression_ratio;
+			
 			ImageObject.add(String.valueOf(String.format("%.1f", compression_ratio)));
 			ImageObject.add(String.valueOf(width) + "x" + String.valueOf(height));
+			ImageObject.add(listOfImageUrls.get(j));
 			allImageResults.add(ImageObject);
 			System.out.println("############");
 			System.out.println("ImageObject " + j + ":" + ImageObject);			
@@ -208,23 +240,25 @@ public class HomeController {
 		 * judge!
 		 */
 
-		ArrayList<Integer> report = new ArrayList<Integer>();
-		report.add(downloadedImageFinalNames.size());
-		report.add(less_bandwidth);
-		report.add(size_reduction_percentage);
+//		ArrayList<Integer> report = new ArrayList<Integer>();
+//		report.add(downloadedImageFinalNames.size());
+//		report.add(less_bandwidth);
+//		report.add(size_reduction_percentage);
 
+		//mv.addObject("report", report);
+		
+		mv.addObject("numberOfImages", downloadedImageFinalNames.size());
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
-		mv.addObject("allImageResults1", allImageResults);
-		//System.out.println("*******");
-		//System.out.println(searchInput.toString());
-
-		mv.addObject("numberOfImages", downloadedImageFinalNames.size());
-		mv.addObject("report", report);
-		mv.addObject("listOfImageUrls", listOfImageUrls);
-		mv.addObject("recompressedImageFinalNames1", recompressedImageFinalNames);
+		//mv.addObject("faster_load_time", faster_load_time);
+		//mv.addObject("annual_cdn_savings", annual_cdn_savings);
 		
-				return mv; // return model and view
+		mv.addObject("allImageResults", allImageResults);
+
+		//mv.addObject("listOfImageUrls", listOfImageUrls);
+		//mv.addObject("recompressedImageFinalNames1", recompressedImageFinalNames);
+		
+		return mv; // return model and view
 
 	}
 
