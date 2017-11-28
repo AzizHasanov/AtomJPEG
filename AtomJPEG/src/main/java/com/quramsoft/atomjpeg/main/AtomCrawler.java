@@ -35,11 +35,6 @@ import javax.imageio.ImageIO;
 
 public class AtomCrawler {
 
-	// final static String ORIGINAL_IMAGE_PATH = "AtomJpeg_Spring" + File.separator
-	// + "resources" + File.separator + "images" + File.separator + "org";
-	// final static String ATOM_IMAGE_PATH = "AtomJpeg_Spring" + File.separator +
-	// "resources" + File.separator + "images" + File.separator + "atom";
-	//
 	private static final String USER_HOME = System.getProperty("user.home") + File.separator;
 
 	final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator

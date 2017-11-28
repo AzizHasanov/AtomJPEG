@@ -197,7 +197,7 @@ public class HomeController {
 			ImageObject.add(String.valueOf(width) + "x" + String.valueOf(height));
 			allImageResults.add(ImageObject);
 			System.out.println("############");
-			System.out.println("ImageObject:" + ImageObject);			
+			System.out.println("ImageObject " + j + ":" + ImageObject);			
 		}
 		
 		int size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
