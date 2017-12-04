@@ -49,9 +49,12 @@ public class AtomCrawler {
 	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
 	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
 
+	static ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
+
+	
 	public static ArrayList<String> returnAllCrawledImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
 		// 1
-		ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
+		//ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
 
 		ArrayList<String> imageoptions = new ArrayList<String>();
 		String selectParameter = "";
@@ -98,46 +101,21 @@ public class AtomCrawler {
 
 	}
 
-	public static ArrayList<String> returnAllCrawledImageURLs(String url) {
-		ArrayList<String> listOfImageUrls = new ArrayList<String>();
-		Document doc;
-		try {
-			doc = Jsoup.connect(url).get();
-			// Elements images = doc.select("img[src~=(?i)\\.(png|jpe?g|gif)]");
-			Elements images = doc.select("img[src~=(?i)\\.(jpe?g)]"); // Only Jpeg or Jpg image files
-			System.out.println("Total number of image links:" + images.size());
-			int i = 0;
-			for (Element image : images) {
-				String imageLink = image.attr("src");
-				if (imageLink.length() > 0 & imageLink.length() < 4) {
-					imageLink = doc.baseUri() + imageLink.substring(1);
-				} else if (!imageLink.substring(0, 4).equals("http"))
-					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
-
-				System.out.println(imageLink);
-				listOfImageUrls.add(imageLink);
-			}
-
-		} catch (
-
-		IOException e) {
-			e.printStackTrace();
-		}
-		return listOfImageUrls;
-
-	}
 
 	// Download images using url
 	public static ArrayList<String> downloadImages(ArrayList<String> listOfImageUrls) {
 		// 2
-		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
-		int numberOfImages = listOfImageUrls.size();
+				ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
+				int numberOfImages = listOfImageUrls.size();
+				
 
-		for (int i = 0; i < numberOfImages; i++) {
-			downloadedImageFinalNames.add(downloadImage(listOfImageUrls.get(i),
-					ORIGINAL_IMAGE_NAME_TEMPLATE + i + ".jpg", ORIGINAL_IMAGE_PATH));
-		}
-		return downloadedImageFinalNames;
+				for (int i = 0; i < numberOfImages; i++) {			
+					
+					String imageExtension = listOfImageUrls.get(i).substring(listOfImageUrls.get(i).length() - 4);			
+								
+					downloadedImageFinalNames.add(downloadImage(listOfImageUrls.get(i),	ORIGINAL_IMAGE_NAME_TEMPLATE + i + imageExtension, ORIGINAL_IMAGE_PATH));
+				}
+				return downloadedImageFinalNames;
 
 	}
 
@@ -195,10 +173,19 @@ public class AtomCrawler {
 			 * continue;//this filters images below 1000 bytes }
 			 */
 			// atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
-			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + ".jpg";
+			String imageExtension = null;
+			if (listOfCrawledImageURLs.get(i).length() > 4)
+				{
+					imageExtension = listOfCrawledImageURLs.get(i).substring(listOfCrawledImageURLs.get(i).length() - 4);			
+				}
+
+			
+			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + imageExtension;
 			recompressedImageFinalNames
 					.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));
 
+			
+			
 		}
 		return recompressedImageFinalNames;
 

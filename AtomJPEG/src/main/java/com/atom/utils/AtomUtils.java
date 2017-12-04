@@ -260,10 +260,13 @@ public class AtomUtils {
 		}
 		
 		imageType = getMimeType(srcName, resolution);
-
-		if(imageType.compareTo("image/jpeg") == 0) {
+		if(imageType.compareTo("image/jpeg") == 0 ||
+				imageType.compareTo("image/png") == 0 ||
+				imageType.compareTo("image/gif") == 0 ||
+				imageType.compareTo("image/BMP") == 0) {
 			
 		}
+
 		else {
 			return -1;
 		}
