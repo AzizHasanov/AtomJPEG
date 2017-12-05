@@ -49,13 +49,13 @@ public class AtomCrawler {
 	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
 	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
 
-	static ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
+	static ArrayList<String> listOfCrawledImageURLs;
 
 	
 	public static ArrayList<String> returnAllCrawledImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
 		// 1
 		//ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
-
+		listOfCrawledImageURLs  = new ArrayList<String>();;
 		ArrayList<String> imageoptions = new ArrayList<String>();
 		String selectParameter = "";
 		if (bPng == true)

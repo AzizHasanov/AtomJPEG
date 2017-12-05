@@ -51,6 +51,11 @@ public class HomeController {
 	final static String ORIGINAL_IMAGE_PATH_JSP = File.separator + "images" + File.separator + "org";
 	final static String ATOM_IMAGE_PATH_JSP = File.separator + "images" + File.separator + "atom";
 	
+	
+	ArrayList<ArrayList<String>> allImageResults;
+	Integer numberOfImages;
+	Integer less_bandwidth;
+	Integer size_reduction_percentage;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -80,51 +85,10 @@ public class HomeController {
 
 		// if new request delete the files of original and compressed images
 
-		File org = new File(ORIGINAL_IMAGE_PATH);
-		File atom = new File(ATOM_IMAGE_PATH);
-		// File org_cached = new File(cached_original_image_path);
-		// File atom_cached = new File(cached_compressed_image_path);
+		cleanTemporalFolders();
 
-		File[] org_listOfFiles = org.listFiles();
-		File[] atom_listOfFiles = atom.listFiles();
-		// File[] org_cached_listOfFiles = org_cached.listFiles();
-		// File[] atom_cached_listOfFiles = atom_cached.listFiles();
-
-		if (org.isDirectory() && atom.isDirectory()) {
-			for (int i = 0; i < org_listOfFiles.length; i++) {
-				if (org_listOfFiles[i].isFile()) {
-					System.out.println("File " + org_listOfFiles[i].getName() + "is getting deleted");
-					org_listOfFiles[i].delete();
-				}
-			}
-			for (int i = 0; i < atom_listOfFiles.length; i++) {
-				if (atom_listOfFiles[i].isFile()) {
-					System.out.println("File " + atom_listOfFiles[i].getName() + "is getting deleted");
-					atom_listOfFiles[i].delete();
-				}
-			}
-		}
-
-		// if (org_cached.isDirectory() && atom_cached.isDirectory()) {
-		// for (int i = 0; i < org_cached_listOfFiles.length; i++) {
-		// if (org_cached_listOfFiles[i].isFile()) {
-		// System.out.println("File " + org_cached_listOfFiles[i].getName() + "is
-		// getting deleted");
-		// org_cached_listOfFiles[i].delete();
-		// }
-		// }
-		// for (int i = 0; i < atom_cached_listOfFiles.length; i++) {
-		// if (atom_cached_listOfFiles[i].isFile()) {
-		// System.out.println("File " + atom_cached_listOfFiles[i].getName() + "is
-		// getting deleted");
-		// atom_cached_listOfFiles[i].delete();
-		// }
-		// }
-
-		return "main"; // dynamic form using Spring's form tag library
-		
-		
-		//return "home";
+		//return "main"; 
+		return "ready"; 
 	}
 
 	/*
@@ -185,6 +149,9 @@ public class HomeController {
 	public @ResponseBody ModelAndView resultForm(SearchInput searchInput) {
 		ModelAndView mv = new ModelAndView("result");
 
+		cleanTemporalFolders();
+
+		
 		int less_bandwidth = 0;
 		int average_size_reduction = 0;
 
@@ -312,10 +279,12 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/ready", method = RequestMethod.POST)
-	public @ResponseBody ModelAndView resultImages(SearchInput searchInput) {
-		ModelAndView mv = new ModelAndView("result");
+	public @ResponseBody ModelAndView resultReport(SearchInput searchInput) {
+		ModelAndView mv = new ModelAndView("report");
 
-		int less_bandwidth = 0;
+		cleanTemporalFolders();
+		
+		less_bandwidth = 0;
 		int average_size_reduction = 0;
 
 		ArrayList<String> listOfImageUrls = new ArrayList<String>();
@@ -339,7 +308,7 @@ public class HomeController {
 		
 		
 		// MetaArray
-		ArrayList<ArrayList<String>> allImageResults = new ArrayList<ArrayList<String>>();		
+		allImageResults = new ArrayList<ArrayList<String>>();		
 		for (int j = 0; j < recompressedImageFinalNames.size(); j++) {
 			
 			File file_compressed = new File(recompressedImageFinalNames.get(j));
@@ -400,7 +369,7 @@ public class HomeController {
 			ImageObject.add(String.valueOf(original_file_size));
 			ImageObject.add(String.valueOf(compressed_file_size));
 			
-			less_bandwidth += original_file_size - compressed_file_size;
+			less_bandwidth += (int)(original_file_size - compressed_file_size);
 			average_size_reduction += compression_ratio;
 			
 			ImageObject.add(String.valueOf(String.format("%.1f", compression_ratio)));
@@ -411,7 +380,7 @@ public class HomeController {
 			System.out.println("ImageObject " + j + ":" + ImageObject);			
 		}
 		
-		int size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
+		size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
 		/*
 		 * for (int i = 0; i < downloadedImageFinalNames.size(); i++) {
 		 * ((Map<String,String>) allImageResults2).put(listOfImageUrls.get(i),
@@ -419,26 +388,85 @@ public class HomeController {
 		 * judge!
 		 */
 
-//		ArrayList<Integer> report = new ArrayList<Integer>();
-//		report.add(downloadedImageFinalNames.size());
-//		report.add(less_bandwidth);
-//		report.add(size_reduction_percentage);
-
+//		ArrayList<String> report = new ArrayList<String>();
+//		report.add(Integer.toString(downloadedImageFinalNames.size()));
+//		report.add(Integer.toString(less_bandwidth));
+//		report.add(Integer.toString(size_reduction_percentage));
+//		
+//		allImageResults.add(report);
 		//mv.addObject("report", report);
-		
+		numberOfImages = downloadedImageFinalNames.size();
 		mv.addObject("numberOfImages", downloadedImageFinalNames.size());
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
 		//mv.addObject("faster_load_time", faster_load_time);
 		//mv.addObject("annual_cdn_savings", annual_cdn_savings);
 		
-		mv.addObject("allImageResults", allImageResults);
+		//mv.addObject("allImageResults", allImageResults);
 
 		//mv.addObject("listOfImageUrls", listOfImageUrls);
-		//mv.addObject("recompressedImageFinalNames1", recompressedImageFinalNames);
 		
-		return mv; // return model and view
+		return mv; 
 
+	}
+	
+	@RequestMapping(value = "/result", method = RequestMethod.POST)
+	public @ResponseBody ModelAndView resultImages(SearchInput searchInput) {
+		ModelAndView mv = new ModelAndView("result");
+		
+		mv.addObject("numberOfImages", numberOfImages);
+		mv.addObject("less_bandwidth", less_bandwidth);
+		mv.addObject("size_reduction_percentage", size_reduction_percentage);
+		
+		mv.addObject("allImageResults", allImageResults);
+		
+		
+		return mv;
+	}
+	
+	
+	public void cleanTemporalFolders()
+	{
+		File org = new File(ORIGINAL_IMAGE_PATH);
+		File atom = new File(ATOM_IMAGE_PATH);
+		// File org_cached = new File(cached_original_image_path);
+		// File atom_cached = new File(cached_compressed_image_path);
+
+		File[] org_listOfFiles = org.listFiles();
+		File[] atom_listOfFiles = atom.listFiles();
+		// File[] org_cached_listOfFiles = org_cached.listFiles();
+		// File[] atom_cached_listOfFiles = atom_cached.listFiles();
+
+		if (org.isDirectory() && atom.isDirectory()) {
+			for (int i = 0; i < org_listOfFiles.length; i++) {
+				if (org_listOfFiles[i].isFile()) {
+					System.out.println("File " + org_listOfFiles[i].getName() + "is getting deleted");
+					org_listOfFiles[i].delete();
+				}
+			}
+			for (int i = 0; i < atom_listOfFiles.length; i++) {
+				if (atom_listOfFiles[i].isFile()) {
+					System.out.println("File " + atom_listOfFiles[i].getName() + "is getting deleted");
+					atom_listOfFiles[i].delete();
+				}
+			}
+		}
+
+		// if (org_cached.isDirectory() && atom_cached.isDirectory()) {
+		// for (int i = 0; i < org_cached_listOfFiles.length; i++) {
+		// if (org_cached_listOfFiles[i].isFile()) {
+		// System.out.println("File " + org_cached_listOfFiles[i].getName() + "is
+		// getting deleted");
+		// org_cached_listOfFiles[i].delete();
+		// }
+		// }
+		// for (int i = 0; i < atom_cached_listOfFiles.length; i++) {
+		// if (atom_cached_listOfFiles[i].isFile()) {
+		// System.out.println("File " + atom_cached_listOfFiles[i].getName() + "is
+		// getting deleted");
+		// atom_cached_listOfFiles[i].delete();
+		// }
+		// }
 	}
 	
 }

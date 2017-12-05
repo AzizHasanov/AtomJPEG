@@ -31,6 +31,7 @@
 				<h3>Report</h3>
 				<div class="row">
 					<table class="table">
+
 						<thead>
 							<tr>
 								<th>Images</th>
@@ -78,9 +79,8 @@
 									<div class="modal-body">
 										<div class="20_container">
 											<img src="<c:url value ="${element[0]}" />"
-												class="image1 image1" alt="Original Image">
-
-											<img src="<c:url value ="${element[1]}" />"
+												class="image1 image1" alt="Original Image"> <img
+												src="<c:url value ="${element[1]}" />"
 												class="image2  image2" alt="Modified Image">
 
 										</div>
@@ -166,7 +166,8 @@
 								</div>
 								<div class="col-md-4" style="float: right;">
 
-									<img class="img-responsive" src="<c:url value ="${element[1]}" />">
+									<img class="img-responsive"
+										src="<c:url value ="${element[1]}" />">
 
 								</div>
 							</div>
