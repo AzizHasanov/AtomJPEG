@@ -96,7 +96,6 @@ public class AtomCrawler {
 				{
 					listOfCrawledImageURLs.add(imageLink);
 					System.out.println(imageLink);
-
 				}
 				
 				
