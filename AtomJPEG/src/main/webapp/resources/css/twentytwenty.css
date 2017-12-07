@@ -80,13 +80,15 @@
   z-index: 0;
   overflow: hidden;
   position: relative;
+  margin: auto;
   -webkit-user-select: none;
   -moz-user-select: none; }
   .twentytwenty-container img {
     max-width: 100%;
     position: absolute;
     top: 0;
-    display: block; }
+    display: block; 
+    margin: auto;}
   .twentytwenty-container.active .twentytwenty-overlay, .twentytwenty-container.active :hover.twentytwenty-overlay {
     background: rgba(0, 0, 0, 0); }
     .twentytwenty-container.active .twentytwenty-overlay .twentytwenty-before-label,
@@ -96,7 +98,8 @@
   .twentytwenty-container * {
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
-    box-sizing: content-box; }
+    box-sizing: content-box; 
+    margin: auto;}
 
 .twentytwenty-before-label {
   opacity: 0; }

@@ -23,7 +23,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	 <mvc:resources mapping="/images/**" location="file:///home/aziz/AtomJPEG/resources/images/"/>
+	 <mvc:resources mapping="/images/**" location="file:///home/ronie/AtomJPEG/resources/images/"/>
 	
 	<context:component-scan base-package="com.quramsoft.atomjpeg.controller" />
 	
