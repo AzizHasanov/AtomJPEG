@@ -61,9 +61,9 @@ public class AtomCrawler {
 		if (bPng == true)
 			imageoptions.add("png");
 		if (bJpg == true)
-			imageoptions.add("jpe?g");
+			imageoptions.add("jpg");
 		if (bGif == true)
-			imageoptions.add("gif");
+			imageoptions.add("gif");		
 
 		for (int i = 0; i < imageoptions.size(); i++) {
 
@@ -88,8 +88,18 @@ public class AtomCrawler {
 				} else if (!imageLink.substring(0, 4).equals("http"))
 					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
 
-				System.out.println(imageLink);
-				listOfCrawledImageURLs.add(imageLink);
+				String imgExtension =  imageLink.substring(imageLink.length() - 3);
+				
+				if (imgExtension.equalsIgnoreCase("png") || 
+						imgExtension.equalsIgnoreCase("jpg") ||
+						imgExtension.equalsIgnoreCase("gif")  )
+				{
+					listOfCrawledImageURLs.add(imageLink);
+					System.out.println(imageLink);
+
+				}
+				
+				
 			}
 
 		} catch (

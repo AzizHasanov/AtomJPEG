@@ -128,8 +128,8 @@
 						<tbody>
 							<tr>
 								<td>${numberOfImages}</td>
-								<td>${less_bandwidth}</td>
-								<td>${size_reduction_percentage}</td>
+								<td>${less_bandwidth} KB</td>
+								<td>${size_reduction_percentage} %</td>
 								<td>0.07 sec</td>
 								<td>$400,208</td>
 							</tr>
