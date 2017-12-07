@@ -54,7 +54,6 @@ public class AtomCrawler {
 	
 	public static ArrayList<String> returnAllCrawledImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
 		// 1
-		//ArrayList<String> listOfCrawledImageURLs = new ArrayList<String>();
 		listOfCrawledImageURLs  = new ArrayList<String>();;
 		ArrayList<String> imageoptions = new ArrayList<String>();
 		String selectParameter = "";

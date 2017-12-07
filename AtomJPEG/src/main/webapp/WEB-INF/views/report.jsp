@@ -171,62 +171,9 @@
 				},
 
 				300);
-				/*
-				var image1 = $(modal_name+" .image1");
-				console.log(image1);
-				
-				
-				
-				var image1_width = image1[0].width;
-				var image1_height = image1[0].height;
-				var handler_position = image1_width/2;
-				console.log(image1_width);
-				
-				if(image1_width < 300){
-				$(".twentytwenty-container").css("padding-left","150");
-				//$(".twentytwenty-handle").css("left",handler_position+150);
-				}
-				
-				var handler_position = image1_width/2;
-				$(modal_name + " .twentytwenty-container").css("height",(image1_height - 100) + "px");
-				$(modal_name + " .twentytwenty-before").removeAttr("style");
-				$(modal_name + " .twentytwenty-after").removeAttr("style");
-				$(".twentytwenty-handle").css("left",handler_position);
-				  $(modal_name).on("load",function(){
-				  console.log(modal_name + " is loaded");
-				  });
-
-
-				$(modal_name + " .20_container").twentytwenty();
-				
-				 */
-
+			
 			});
-		}
-		/*
-		 $(document).ready(function(){
-		 alert("ffs");	
-		 $("a").click(function(){
-		 $(".20_container").twentytwenty();
-		 //var image1 = document.getElementById("image1");
-		 //	$(".20_container").twentytwenty();	
-
-		 //var modal_name = $(this)[0]["href"].split("#")[1];
-		 alert("dsgds");
-		 var modal_name = $(this)[0]["attributes"][0]["value"];
-		 console.log(modal_name);
-		 var image1 = $(modal_name+" .image1");
-		 console.log(image1);
-		 var image1_width = image1[0].width;
-		 var image1_height = image1[0].height;
-		 console.log(image1_height);
-		 $(".twentytwenty-container").css("height",(image1_height - 100) + "px");
-		 $(".twentytwenty-before").removeAttr("style");
-		 $(".twentytwenty-after").removeAttr("style");
-		 $(".twentytwenty-handle").css("left:,"200px");
-		 });
-		 });
-		 */
+		}		
 	</script>
 </body>
 </html>
