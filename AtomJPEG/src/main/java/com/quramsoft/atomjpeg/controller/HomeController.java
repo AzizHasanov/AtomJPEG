@@ -224,7 +224,8 @@ public class HomeController {
 		mv.addObject("numberOfImages", numberOfImages);
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
-
+		mv.addObject("timeToCompress", timeToCompress);
+		
 		mv.addObject("allImageResults", allImageResults);
 
 		return mv;
