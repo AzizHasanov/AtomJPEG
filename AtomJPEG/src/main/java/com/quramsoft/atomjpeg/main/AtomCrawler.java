@@ -42,19 +42,21 @@ public class AtomCrawler {
 	final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
 			+ "images" + File.separator + "atom";
 
-//	final static String ORIGINAL_IMAGE_PATH = File.separator + "images" + File.separator + "org";
-//	final static String ATOM_IMAGE_PATH = File.separator + "images" + File.separator + "atom";
-//	
+	// final static String ORIGINAL_IMAGE_PATH = File.separator + "images" +
+	// File.separator + "org";
+	// final static String ATOM_IMAGE_PATH = File.separator + "images" +
+	// File.separator + "atom";
+	//
 	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
 	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
 	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
 
 	static ArrayList<String> listOfCrawledImageURLs;
 
-	
 	public static ArrayList<String> returnAllCrawledImageURLs(String url, boolean bJpg, boolean bPng, boolean bGif) {
 		// 1
-		listOfCrawledImageURLs  = new ArrayList<String>();;
+		listOfCrawledImageURLs = new ArrayList<String>();
+		;
 		ArrayList<String> imageoptions = new ArrayList<String>();
 		String selectParameter = "";
 		if (bPng == true)
@@ -62,7 +64,7 @@ public class AtomCrawler {
 		if (bJpg == true)
 			imageoptions.add("jpg");
 		if (bGif == true)
-			imageoptions.add("gif");		
+			imageoptions.add("gif");
 
 		for (int i = 0; i < imageoptions.size(); i++) {
 
@@ -84,20 +86,22 @@ public class AtomCrawler {
 				String imageLink = image.attr("src");
 				if (imageLink.length() > 0 & imageLink.length() < 4) {
 					imageLink = doc.baseUri() + imageLink.substring(1);
-				} else if (!imageLink.substring(0, 4).equals("http"))
+				}
+				/*
+				 * else if (!imageLink.substring(0, 5).equals("https")) imageLink =
+				 * doc.baseUri() + "/" + imageLink; // .substring(1)
+				 */
+
+				else if (!imageLink.substring(0, 4).equals("http"))
 					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
 
-				String imgExtension =  imageLink.substring(imageLink.length() - 3);
-				
-				if (imgExtension.equalsIgnoreCase("png") || 
-						imgExtension.equalsIgnoreCase("jpg") ||
-						imgExtension.equalsIgnoreCase("gif")  )
-				{
+				String imgExtension = imageLink.substring(imageLink.length() - 3);
+
+				if (imgExtension.equalsIgnoreCase("png") || imgExtension.equalsIgnoreCase("jpg")
+						|| imgExtension.equalsIgnoreCase("gif")) {
 					listOfCrawledImageURLs.add(imageLink);
 					System.out.println(imageLink);
 				}
-				
-				
 			}
 
 		} catch (
@@ -109,21 +113,20 @@ public class AtomCrawler {
 
 	}
 
-
 	// Download images using url
 	public static ArrayList<String> downloadImages(ArrayList<String> listOfImageUrls) {
 		// 2
-				ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
-				int numberOfImages = listOfImageUrls.size();
-				
+		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
+		int numberOfImages = listOfImageUrls.size();
 
-				for (int i = 0; i < numberOfImages; i++) {			
-					
-					String imageExtension = listOfImageUrls.get(i).substring(listOfImageUrls.get(i).length() - 4);			
-								
-					downloadedImageFinalNames.add(downloadImage(listOfImageUrls.get(i),	ORIGINAL_IMAGE_NAME_TEMPLATE + i + imageExtension, ORIGINAL_IMAGE_PATH));
-				}
-				return downloadedImageFinalNames;
+		for (int i = 0; i < numberOfImages; i++) {
+
+			String imageExtension = listOfImageUrls.get(i).substring(listOfImageUrls.get(i).length() - 4);
+
+			downloadedImageFinalNames.add(downloadImage(listOfImageUrls.get(i),
+					ORIGINAL_IMAGE_NAME_TEMPLATE + i + imageExtension, ORIGINAL_IMAGE_PATH));
+		}
+		return downloadedImageFinalNames;
 
 	}
 
@@ -182,18 +185,14 @@ public class AtomCrawler {
 			 */
 			// atomImageName = ATOM_IMAGE_NAME_TEMPLATE.replace('*', (char) i);
 			String imageExtension = null;
-			if (listOfCrawledImageURLs.get(i).length() > 4)
-				{
-					imageExtension = listOfCrawledImageURLs.get(i).substring(listOfCrawledImageURLs.get(i).length() - 4);			
-				}
+			if (listOfCrawledImageURLs.get(i).length() > 4) {
+				imageExtension = listOfCrawledImageURLs.get(i).substring(listOfCrawledImageURLs.get(i).length() - 4);
+			}
 
-			
 			atomImageName = ATOM_IMAGE_NAME_TEMPLATE + i + imageExtension;
 			recompressedImageFinalNames
 					.add(recompressImage(listOfImageSrcs.get(i), atomImageName, ATOM_IMAGE_PATH, profile, level));
 
-			
-			
 		}
 		return recompressedImageFinalNames;
 
@@ -276,7 +275,7 @@ public class AtomCrawler {
 
 		String outputPath = null;
 		String srcPath = null;
-		long resultSize = AtomUtils.convertJpegToAtomJPEG(srcPath, outputPath, ao);
+		//long resultSize = AtomUtils.convertJpegToAtomJPEG(srcPath, outputPath, ao);
 
 	}
 
@@ -321,27 +320,7 @@ public class AtomCrawler {
 			e.printStackTrace();
 		}
 	}
-
-	// Image Pop-up
-	/*
-	 * public static void MyModal(){ // Get the modal
-	 * 
-	 * var modal = document.getElementById('myModal');
-	 * 
-	 * // Get the image and insert it inside the modal - use its "alt" text as a
-	 * caption var img = document.getElementById('myImg'); var modalImg =
-	 * document.getElementById("img01"); var captionText =
-	 * document.getElementById("caption"); img.onclick = function(){
-	 * modal.style.display = "block"; modalImg.src = this.src; captionText.innerHTML
-	 * = this.alt; }
-	 * 
-	 * // Get the <span> element that closes the modal var span =
-	 * document.getElementsByClassName("close")[0];
-	 * 
-	 * // When the user clicks on <span> (x), close the modal span.onclick =
-	 * function() { modal.style.display = "none"; } }
-	 */
-
+	
 	// To download image
 	public static String storeImageIntoFS(String imageUrl, String fileName, String relativePath) {
 		String imagePath = null;
@@ -364,37 +343,4 @@ public class AtomCrawler {
 		}
 		return imagePath;
 	}
-
-	// Image Pop-up
-	/*
-	 * public static void MyModal(){ // Get the modal
-	 * 
-	 * var modal = document.getElementById('myModal');
-	 * 
-	 * // Get the image and insert it inside the modal - use its "alt" text as a
-	 * caption var img = document.getElementById('myImg'); var modalImg =
-	 * document.getElementById("img01"); var captionText =
-	 * document.getElementById("caption"); img.onclick = function(){
-	 * modal.style.display = "block"; modalImg.src = this.src; captionText.innerHTML
-	 * = this.alt; }
-	 * 
-	 * // Get the <span> element that closes the modal var span =
-	 * document.getElementsByClassName("close")[0];
-	 * 
-	 * // When the user clicks on <span> (x), close the modal span.onclick =
-	 * function() { modal.style.display = "none"; } }
-	 */
-
 }
-
-/*
- * /////////////////////////////////////////////////////////////////////////////
- * ////////////////// /* When you receive an image crawl request, empty the
- * temporary folder. Please create a temporary directory of crawled images and
- * save them in there. example) if temporary directory name is temp
- * temp/org/crawled_001.jpg temp/org/crawled_002.jpg temp/org/crawled_003.jpg
- * and so on... Then recompressed images are save into atom directory ex)
- * temp/atom/crawled_001_atom.jpg temp/atom/crawled_002_atom.jpg and so on... If
- * you press the download button, please compress all temp/org, temp/atom images
- * into one zip file and download the zip file. (please refer to page 3 of PPT)
- */
