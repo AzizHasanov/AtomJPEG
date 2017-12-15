@@ -72,7 +72,7 @@ public class HomeController {
 		return "ready";
 	}
 
-	@RequestMapping(value = "/ready", method = RequestMethod.POST)
+	@RequestMapping(value = "/report", method = RequestMethod.POST)
 	public @ResponseBody ModelAndView resultReport(SearchInput searchInput) {
 		ModelAndView mv = new ModelAndView("report");
 

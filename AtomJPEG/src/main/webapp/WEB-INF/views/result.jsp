@@ -58,11 +58,15 @@
 
 			<!-- End of 1st row -->
 			<!-- Start of 2nd row-->
-			<div class="result_images">
+			<div class="result_images">				
+			<form  action="/atomjpeg/" method="GET">
+				<div class="row">
+					<div class="col-md-4">
+						<button class="btn-primary">Home</button>
+					</div>
+				</div>
+			</form>
 				<h3>Image Resuts</h3>
-
-				<a href="${rootPath}">Home</a>
-				<h4>All Searched Images:</h4>
 				<div class="row one_image_result">
 					<c:forEach items="${allImageResults}" var="tempItem"
 						varStatus="loop_in_modal">

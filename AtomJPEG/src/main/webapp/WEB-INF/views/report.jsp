@@ -30,7 +30,7 @@
 			<h1>AtomJPEG Test</h1>
 		</div>
 		<div class="user_input_form">
-			<form id="searchinput" action="/atomjpeg/ready" method="POST">
+			<form id="searchinput" action="/atomjpeg/report" method="POST">
 				<div class="row">
 					<div class="col-md-8">
 						<input id="url" name="url"
@@ -138,15 +138,22 @@
 					</table>
 
 				</div>
-			</div>
-			<a href="${rootPath}">Home</a>
-			<form id="searchinput" action="/atomjpeg/result" method="POST">
-				<div class="row">
+			</div>	
+			<div>	
+			<form  action="/atomjpeg/" method="GET">
 					<div class="col-md-4">
-						<button class="btn-primary">Display Images</button>
+						<button class="btn-primary" >Home</button>
 					</div>
-				</div>
+			
 			</form>
+			<form id="searchinput" action="/atomjpeg/result" method="POST">
+			
+					<div class="col-md-4">
+						<button class="btn-primary" style="float: right;" >Display Images</button>
+					</div>
+		
+			</form>
+			</div>		
 		</div>
 	</div>
 

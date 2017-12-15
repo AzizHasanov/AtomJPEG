@@ -36,7 +36,7 @@ so that form can be auto-filled with model data. --%>
 			<h1>AtomJPEG Test</h1>
 		</div>
 		<div class="user_input_form">
-			<form id="searchinput" action="/atomjpeg/ready" method="POST">
+			<form id="searchinput" action="/atomjpeg/report" method="POST">
 				<div class="row">
 					<div class="col-md-8">
 						<input id="url" name="url"
