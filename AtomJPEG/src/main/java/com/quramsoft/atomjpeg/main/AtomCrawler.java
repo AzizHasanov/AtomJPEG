@@ -42,11 +42,6 @@ public class AtomCrawler {
 	final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
 			+ "images" + File.separator + "atom";
 
-	// final static String ORIGINAL_IMAGE_PATH = File.separator + "images" +
-	// File.separator + "org";
-	// final static String ATOM_IMAGE_PATH = File.separator + "images" +
-	// File.separator + "atom";
-	//
 	final static String ORIGINAL_IMAGE_NAME_TEMPLATE = "crawled_";
 	final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_atom_";
 	// final static String ATOM_IMAGE_NAME_TEMPLATE = "crawled_*_atom_";
@@ -87,10 +82,6 @@ public class AtomCrawler {
 				if (imageLink.length() > 0 & imageLink.length() < 4) {
 					imageLink = doc.baseUri() + imageLink.substring(1);
 				}
-				/*
-				 * else if (!imageLink.substring(0, 5).equals("https")) imageLink =
-				 * doc.baseUri() + "/" + imageLink; // .substring(1)
-				 */
 
 				else if (!imageLink.substring(0, 4).equals("http"))
 					imageLink = doc.baseUri() + "/" + imageLink; // .substring(1)
@@ -138,7 +129,6 @@ public class AtomCrawler {
 		try {
 			url = new URL(imageUrl);
 
-			// String fileName = url.getFile();
 			File rootTargetDir = new File(destName);
 			if (!rootTargetDir.exists()) {
 				boolean created = rootTargetDir.mkdirs();
@@ -249,17 +239,11 @@ public class AtomCrawler {
 		String atomImageFinalName = destName + File.separator + imageName;
 
 		int sizeOfAtomJPEG = AtomUtils.convertJpegToAtomJPEG(imageSrc, atomImageFinalName, ao);
-		// AtomUtils au = new AtomUtils();
-		// int sizeOfAtomJPEG = au.convertJpegToAtomJPEG(srcImg1, destImg1, ao);
+
 		System.out.println("Converted Atom image: " + atomImageFinalName);
 		System.out.println("sizeOfAtomJPEG: " + sizeOfAtomJPEG);
 		return atomImageFinalName;
 
-	}
-
-	public static void main(String[] args) throws IOException {
-
-		// returnAllImageURLs("http://www.quramsoft.com");
 	}
 
 	public static void AtomJPEG() {
@@ -272,75 +256,5 @@ public class AtomCrawler {
 
 		// (If you specify the width and height to zero is converted to the same size as
 		// the original resolution.)
-
-		String outputPath = null;
-		String srcPath = null;
-		//long resultSize = AtomUtils.convertJpegToAtomJPEG(srcPath, outputPath, ao);
-
-	}
-
-	public void getFormParams(String html) {
-
-		Document doc = Jsoup.parse(html);
-
-		// HTML form id
-		Element loginform = doc.getElementById("your_form_id");
-		Elements inputElements = loginform.getElementsByTag("input");
-
-		ArrayList<String> paramList = new ArrayList<String>();
-		for (Element inputElement : inputElements) {
-			String key = inputElement.attr("name");
-			String value = inputElement.attr("value");
-		}
-	}
-
-	// To save the image
-	public static void saveByteBufferImage(ByteBuffer imageDataBytes, String rootTargetDirectory,
-			String savedFileName) {
-		String uploadInputFile = rootTargetDirectory + savedFileName;
-
-		File rootTargetDir = new File(rootTargetDirectory);
-		if (!rootTargetDir.exists()) {
-			boolean created = rootTargetDir.mkdirs();
-			if (!created) {
-				System.out.println("Error while creating directory for location- " + rootTargetDirectory);
-			}
-		}
-		String[] fileNameParts = savedFileName.split("\\.");
-		String format = fileNameParts[fileNameParts.length - 1];
-
-		File file = new File(uploadInputFile);
-		BufferedImage bufferedImage;
-
-		InputStream in = new ByteArrayInputStream(imageDataBytes.array());
-		try {
-			bufferedImage = ImageIO.read(in);
-			ImageIO.write(bufferedImage, format, file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	// To download image
-	public static String storeImageIntoFS(String imageUrl, String fileName, String relativePath) {
-		String imagePath = null;
-		try {
-			int indexOfCom = imageUrl.lastIndexOf("com/");
-			String mainWebsiteUrl = imageUrl.substring(indexOfCom);
-			// String url =
-			// byte[] bytes =
-			// Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
-
-			byte[] bytes = Jsoup.connect("http://www.quramsoft.com/").ignoreContentType(true).execute().bodyAsBytes();
-
-			ByteBuffer buffer = ByteBuffer.wrap(bytes);
-			// String rootTargetDirectory = fileName + "/" + relativePath; // IMAGE_HOME
-			// imagePath = rootTargetDirectory + "/" + fileName;
-
-			saveByteBufferImage(buffer, relativePath, fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return imagePath;
 	}
 }

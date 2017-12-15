@@ -61,7 +61,7 @@
 			<div class="result_images">
 				<h3>Image Resuts</h3>
 
-				<a href="http://localhost:8080/atomjpeg/">Home</a>
+				<a href="${rootPath}">Home</a>
 				<h4>All Searched Images:</h4>
 				<div class="row one_image_result">
 					<c:forEach items="${allImageResults}" var="tempItem"

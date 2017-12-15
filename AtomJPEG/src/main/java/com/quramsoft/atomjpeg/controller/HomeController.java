@@ -32,24 +32,14 @@ import com.quramsoft.atomjpeg.model.SearchInput;
 @Controller
 public class HomeController {
 
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
 	private static final String USER_HOME = System.getProperty("user.home") + File.separator;
-	private static final String USER_DIR = System.getProperty("user.dir");
-	private static final String USER_NAME = System.getProperty("user.name");
-	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
-	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
-
 	private static final String SERVER_IP = "http://192.168.0.178";
-	private static final String SERVER_PORT = "8090";
+	private static final String SERVER_PORT = "8080";
 
 	private final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
 			+ "images" + File.separator + "org";
 	private final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
-			+ "images" + File.separator + "atom";
-
-	private final static String ORIGINAL_IMAGE_PATH_JSP = File.separator + "images" + File.separator + "org";
-	private final static String ATOM_IMAGE_PATH_JSP = File.separator + "images" + File.separator + "atom";
+			+ "images" + File.separator + "atom";	
 
 	private ArrayList<ArrayList<String>> allImageResults;
 	private int  numberOfImages;
@@ -208,11 +198,15 @@ public class HomeController {
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
 		mv.addObject("timeToCompress", timeToCompress);
-		// mv.addObject("faster_load_time", faster_load_time);
 		// mv.addObject("annual_cdn_savings", annual_cdn_savings);
 
 		// mv.addObject("allImageResults", allImageResults);
 
+		
+		final String rootPath = SERVER_IP + ":" + SERVER_PORT +"/atomjpeg/";
+		
+		mv.addObject("rootPath", rootPath);	
+		
 		return mv;
 
 	}
@@ -227,6 +221,12 @@ public class HomeController {
 		mv.addObject("timeToCompress", timeToCompress);
 		
 		mv.addObject("allImageResults", allImageResults);
+		
+		final String rootPath = SERVER_IP + ":" + SERVER_PORT +"/atomjpeg/";
+		
+		mv.addObject("rootPath", rootPath);		
+
+		
 
 		return mv;
 	}

@@ -139,7 +139,7 @@
 
 				</div>
 			</div>
-			<a href="http://localhost:8080/atomjpeg/">Home</a>
+			<a href="${rootPath}">Home</a>
 			<form id="searchinput" action="/atomjpeg/result" method="POST">
 				<div class="row">
 					<div class="col-md-4">
