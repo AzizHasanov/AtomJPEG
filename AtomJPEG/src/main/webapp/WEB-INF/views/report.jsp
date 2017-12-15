@@ -27,7 +27,7 @@
 
 	<div class="container">
 		<div class="main_header">
-			<h1>AtomJpeg Test</h1>
+			<h1>AtomJPEG Test</h1>
 		</div>
 		<div class="user_input_form">
 			<form id="searchinput" action="/atomjpeg/ready" method="POST">
