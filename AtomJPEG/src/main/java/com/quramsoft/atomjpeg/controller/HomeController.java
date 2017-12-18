@@ -33,8 +33,6 @@ import com.quramsoft.atomjpeg.model.SearchInput;
 public class HomeController {
 
 	private static final String USER_HOME = System.getProperty("user.home") + File.separator;
-	private static final String SERVER_IP = "http://192.168.0.178";
-	private static final String SERVER_PORT = "8080";
 
 	private final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
 			+ "images" + File.separator + "org";
@@ -52,17 +50,6 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) {
-
-		InetAddress IP = null;
-		try {
-			IP = InetAddress.getLocalHost();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		System.out.println("IP address of host: " + IP.getHostAddress());
-		System.out.println("Configured IP address: " + SERVER_IP);
-		System.out.println("Configured port: " + SERVER_PORT);
-		System.out.println("User home path: " + USER_HOME);
 
 		model.addAttribute("searchinput", new SearchInput());
 
@@ -89,7 +76,7 @@ public class HomeController {
 		Instant instAfterCrawling = Instant.now();
 
 
-		System.out.println("STEP 1: All images URLs crawled! ");
+		System.out.println("STEP 1: All image URLs crawled! ");
 
 		ArrayList<String> downloadedImageFinalNames = new ArrayList<String>();
 		Instant instBeforeDownload = Instant.now();
@@ -198,14 +185,7 @@ public class HomeController {
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
 		mv.addObject("timeToCompress", timeToCompress);
-		// mv.addObject("annual_cdn_savings", annual_cdn_savings);
-
-		// mv.addObject("allImageResults", allImageResults);
-
-		
-		final String rootPath = SERVER_IP + ":" + SERVER_PORT +"/atomjpeg/";
-		
-		mv.addObject("rootPath", rootPath);	
+		// mv.addObject("annual_cdn_savings", annual_cdn_savings);   // Need to know the formula to calculate annual CDN savings
 		
 		return mv;
 
@@ -221,10 +201,6 @@ public class HomeController {
 		mv.addObject("timeToCompress", timeToCompress);
 		
 		mv.addObject("allImageResults", allImageResults);
-		
-		final String rootPath = SERVER_IP + ":" + SERVER_PORT +"/atomjpeg/";
-		
-		mv.addObject("rootPath", rootPath);		
 
 		
 
@@ -245,13 +221,13 @@ public class HomeController {
 		if (org.isDirectory() && atom.isDirectory()) {
 			for (int i = 0; i < org_listOfFiles.length; i++) {
 				if (org_listOfFiles[i].isFile()) {
-					System.out.println("File " + org_listOfFiles[i].getName() + "is getting deleted");
+					System.out.println("File " + org_listOfFiles[i].getName() + " is deleted");
 					org_listOfFiles[i].delete();
 				}
 			}
 			for (int i = 0; i < atom_listOfFiles.length; i++) {
 				if (atom_listOfFiles[i].isFile()) {
-					System.out.println("File " + atom_listOfFiles[i].getName() + "is getting deleted");
+					System.out.println("File " + atom_listOfFiles[i].getName() + " is deleted");
 					atom_listOfFiles[i].delete();
 				}
 			}

@@ -44,9 +44,9 @@
 						<tbody>
 							<tr>
 								<td>${numberOfImages}</td>
-								<td>${less_bandwidth} KB</td>
-								<td>${size_reduction_percentage} %</td>
-								<td>${timeToCompress} sec</td>
+								<td>${less_bandwidth}KB</td>
+								<td>${size_reduction_percentage}%</td>
+								<td>${timeToCompress}sec</td>
 								<td>$400,208</td>
 							</tr>
 
@@ -58,14 +58,14 @@
 
 			<!-- End of 1st row -->
 			<!-- Start of 2nd row-->
-			<div class="result_images">				
-			<form  action="/atomjpeg/" method="GET">
-				<div class="row">
-					<div class="col-md-4">
-						<button class="btn-primary">Home</button>
+			<div class="result_images">
+				<form action="/atomjpeg/" method="GET">
+					<div class="row">
+						<div class="col-md-4">
+							<button class="btn-primary">Home</button>
+						</div>
 					</div>
-				</div>
-			</form>
+				</form>
 				<h3>Image Resuts</h3>
 				<div class="row one_image_result">
 					<c:forEach items="${allImageResults}" var="tempItem"
@@ -179,7 +179,6 @@
 					</c:forEach>
 				</div>
 			</div>
-			<!-- End of 2nd row-->
 		</div>
 	</div>
 
@@ -196,20 +195,13 @@
 	<script>
 		window.onload = function() {
 			$("a").click(function() {
-
 				var modal_name = $(this)[0]["attributes"][0]["value"];
 				console.log(modal_name);
 				setTimeout(function() {
 					$(".20_container").twentytwenty();
-				},
-
-				300);				
-
+				}, 300);
 			});
-		}		
-	</script>
-	<script>
-			
+		}
 	</script>
 </body>
 </html>

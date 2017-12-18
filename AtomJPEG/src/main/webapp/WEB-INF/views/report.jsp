@@ -6,6 +6,7 @@
 <title>Results</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <!--  css Files -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet"
@@ -14,6 +15,7 @@
 	rel="stylesheet">
 <link href="<results:url value="/resources/css/twentytwenty.css" />"
 	rel="stylesheet">
+
 <!--  js files -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
@@ -103,11 +105,7 @@
 				</div>
 			</form>
 		</div>
-
-
 	</div>
-
-
 
 	<div class="container">
 		<!-- Start of 1st row -->
@@ -128,39 +126,31 @@
 						<tbody>
 							<tr>
 								<td>${numberOfImages}</td>
-								<td>${less_bandwidth} KB</td>
-								<td>${size_reduction_percentage} %</td>
-								<td>${timeToCompress} sec</td>
+								<td>${less_bandwidth}KB</td>
+								<td>${size_reduction_percentage}%</td>
+								<td>${timeToCompress}sec</td>
 								<td>$400,208</td>
 							</tr>
-
 						</tbody>
 					</table>
-
 				</div>
-			</div>	
-			<div>	
-			<form  action="/atomjpeg/" method="GET">
+			</div>
+			<div>
+				<form action="/atomjpeg/" method="GET">
 					<div class="col-md-4">
-						<button class="btn-primary" >Home</button>
+						<button class="btn-primary">Home</button>
 					</div>
-			
-			</form>
-			<form id="searchinput" action="/atomjpeg/result" method="POST">
-			
+				</form>
+				<form id="searchinput" action="/atomjpeg/result" method="POST">
 					<div class="col-md-4">
-						<button class="btn-primary" style="float: right;" >Display Images</button>
+						<button class="btn-primary" style="float: right;">Display
+							Images</button>
 					</div>
-		
-			</form>
-			</div>		
+				</form>
+			</div>
 		</div>
 	</div>
 
-
-	<!--  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js'></script>
-  -->
 	<script src="<results:url value="/resources/js/main.js"/>"></script>
 	<script src="<results:url value="/resources/js/modernizer.js"/>"></script>
 	<script src="<results:url value="resources/js/jquery.event.move.js"/>"></script>
@@ -170,17 +160,13 @@
 	<script>
 		window.onload = function() {
 			$("a").click(function() {
-
 				var modal_name = $(this)[0]["attributes"][0]["value"];
 				console.log(modal_name);
 				setTimeout(function() {
 					$(".20_container").twentytwenty();
-				},
-
-				300);
-			
+				}, 300);
 			});
-		}		
+		}
 	</script>
 </body>
 </html>
