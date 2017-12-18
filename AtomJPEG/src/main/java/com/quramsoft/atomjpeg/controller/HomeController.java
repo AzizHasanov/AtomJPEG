@@ -34,17 +34,17 @@ public class HomeController {
 
 	private static final String USER_HOME = System.getProperty("user.home") + File.separator;
 
-	private final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
-			+ "images" + File.separator + "org";
+	private final static String ORIGINAL_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources"
+			+ File.separator + "images" + File.separator + "org";
 	private final static String ATOM_IMAGE_PATH = USER_HOME + "AtomJPEG" + File.separator + "resources" + File.separator
-			+ "images" + File.separator + "atom";	
+			+ "images" + File.separator + "atom";
 
 	private ArrayList<ArrayList<String>> allImageResults;
-	private int  numberOfImages;
+	private int numberOfImages;
 	private int less_bandwidth;
 	private int size_reduction_percentage;
 	private double timeToCompress; // in seconds
-	
+
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -69,12 +69,11 @@ public class HomeController {
 		int average_size_reduction = 0;
 
 		ArrayList<String> listOfImageUrls = new ArrayList<String>();
-		
+
 		Instant instBeforeCrawling = Instant.now();
 		listOfImageUrls = AtomCrawler.returnAllCrawledImageURLs(searchInput.getUrl(), searchInput.isJpg(),
 				searchInput.isPng(), searchInput.isGif());
 		Instant instAfterCrawling = Instant.now();
-
 
 		System.out.println("STEP 1: All image URLs crawled! ");
 
@@ -84,28 +83,31 @@ public class HomeController {
 		Instant instAfterDownload = Instant.now();
 
 		System.out.println("STEP 2: All images downloaded! ");
-		
+
 		ArrayList<String> recompressedImageFinalNames = new ArrayList<String>();
-		
+
 		Instant instBeforeCompression = Instant.now();
 		recompressedImageFinalNames = AtomCrawler.recompressImages(downloadedImageFinalNames, searchInput.getProfile(),
 				searchInput.getLevel());
 		Instant instAfterCompression = Instant.now();
-		
+
 		Duration durationCrawling = Duration.between(instBeforeCrawling, instAfterCrawling);
 		Duration durationDownload = Duration.between(instBeforeDownload, instAfterDownload);
 		Duration durationCompression = Duration.between(instBeforeCompression, instAfterCompression);
-		
-		double secDurationCrawling = durationCrawling.toMillis() / 1000.0; //in seconds
-		double secDurationDownload = durationDownload.toMillis() / 1000.0; //in seconds
-		double secDurationCompression = durationCompression.toMillis() / 1000.0; //in seconds
+
+		double secDurationCrawling = durationCrawling.toMillis() / 1000.0; // in seconds
+		double secDurationDownload = durationDownload.toMillis() / 1000.0; // in seconds
+		double secDurationCompression = durationCompression.toMillis() / 1000.0; // in seconds
 
 		timeToCompress = secDurationCompression;
-		
-		System.out.println("Time taken to crawl all images: "+ durationCrawling.toMillis() +" milliseconds" + " or " + secDurationCrawling + " seconds");
-		System.out.println("Time taken to download all images: "+ durationDownload.toMillis() +" milliseconds" + " or " + secDurationDownload + " seconds");
-		System.out.println("Time taken to compress all images: "+ durationCompression.toMillis() +" milliseconds" + " or " + secDurationCompression + " seconds");
-		
+
+		System.out.println("Time taken to crawl all images: " + durationCrawling.toMillis() + " milliseconds" + " or "
+				+ secDurationCrawling + " seconds");
+		System.out.println("Time taken to download all images: " + durationDownload.toMillis() + " milliseconds"
+				+ " or " + secDurationDownload + " seconds");
+		System.out.println("Time taken to compress all images: " + durationCompression.toMillis() + " milliseconds"
+				+ " or " + secDurationCompression + " seconds");
+
 		System.out.println("STEP 3: All images recompressed! ");
 
 		// MetaArray
@@ -177,16 +179,19 @@ public class HomeController {
 			System.out.println("############");
 			System.out.println("ImageObject " + j + ":" + ImageObject);
 		}
-
-		size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
-
+		try {
+			size_reduction_percentage = average_size_reduction / downloadedImageFinalNames.size();
+		} catch (ArithmeticException e) {
+			System.err.println("Caught IOException: " + e.getMessage());
+		}
 		numberOfImages = downloadedImageFinalNames.size();
 		mv.addObject("numberOfImages", downloadedImageFinalNames.size());
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
 		mv.addObject("timeToCompress", timeToCompress);
-		// mv.addObject("annual_cdn_savings", annual_cdn_savings);   // Need to know the formula to calculate annual CDN savings
-		
+		// mv.addObject("annual_cdn_savings", annual_cdn_savings); // Need to know the
+		// formula to calculate annual CDN savings
+
 		return mv;
 
 	}
@@ -199,10 +204,8 @@ public class HomeController {
 		mv.addObject("less_bandwidth", less_bandwidth);
 		mv.addObject("size_reduction_percentage", size_reduction_percentage);
 		mv.addObject("timeToCompress", timeToCompress);
-		
-		mv.addObject("allImageResults", allImageResults);
 
-		
+		mv.addObject("allImageResults", allImageResults);
 
 		return mv;
 	}
